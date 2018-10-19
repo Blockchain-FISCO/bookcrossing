@@ -17,6 +17,10 @@ public class BookServiceImpl implements BookService {
 		// TODO Auto-generated method stub
 		return bookMapper.selectByPrimaryKey(String.valueOf(bookId));
 	}
+	
+//	public Book setBookById() {
+//		return bookMapper.selectByPrimaryKey(String.valueOf(bookId));
+//	}
 
 
 }
