@@ -4,9 +4,13 @@
   <resultMap id="BaseResultMap" type="com.hust.pojo.Book" >
     <id column="book_id" property="bookId" jdbcType="VARCHAR" />
     <result column="book_name" property="bookName" jdbcType="VARCHAR" />
+    <result column="picture" property="picture" jdbcType="VARCHAR" />
+    <result column="author" property="author" jdbcType="VARCHAR" />
+    <result column="book_description" property="bookDescription" jdbcType="VARCHAR" />
+    <result column="press" property="press" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    book_id, book_name
+    book_id, book_name, picture, author, book_description, press
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -19,8 +23,12 @@
     where book_id = #{bookId,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.hust.pojo.Book" >
-    insert into book_map (book_id, book_name)
-    values (#{bookId,jdbcType=VARCHAR}, #{bookName,jdbcType=VARCHAR})
+    insert into book_map (book_id, book_name, picture, 
+      author, book_description, press
+      )
+    values (#{bookId,jdbcType=VARCHAR}, #{bookName,jdbcType=VARCHAR}, #{picture,jdbcType=VARCHAR}, 
+      #{author,jdbcType=VARCHAR}, #{bookDescription,jdbcType=VARCHAR}, #{press,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.hust.pojo.Book" >
     insert into book_map
@@ -31,6 +39,18 @@
       <if test="bookName != null" >
         book_name,
       </if>
+      <if test="picture != null" >
+        picture,
+      </if>
+      <if test="author != null" >
+        author,
+      </if>
+      <if test="bookDescription != null" >
+        book_description,
+      </if>
+      <if test="press != null" >
+        press,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="bookId != null" >
@@ -38,6 +58,18 @@
       </if>
       <if test="bookName != null" >
         #{bookName,jdbcType=VARCHAR},
+      </if>
+      <if test="picture != null" >
+        #{picture,jdbcType=VARCHAR},
+      </if>
+      <if test="author != null" >
+        #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="bookDescription != null" >
+        #{bookDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="press != null" >
+        #{press,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -47,12 +79,28 @@
       <if test="bookName != null" >
         book_name = #{bookName,jdbcType=VARCHAR},
       </if>
+      <if test="picture != null" >
+        picture = #{picture,jdbcType=VARCHAR},
+      </if>
+      <if test="author != null" >
+        author = #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="bookDescription != null" >
+        book_description = #{bookDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="press != null" >
+        press = #{press,jdbcType=VARCHAR},
+      </if>
     </set>
     where book_id = #{bookId,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.hust.pojo.Book" >
     update book_map
-    set book_name = #{bookName,jdbcType=VARCHAR}
+    set book_name = #{bookName,jdbcType=VARCHAR},
+      picture = #{picture,jdbcType=VARCHAR},
+      author = #{author,jdbcType=VARCHAR},
+      book_description = #{bookDescription,jdbcType=VARCHAR},
+      press = #{press,jdbcType=VARCHAR}
     where book_id = #{bookId,jdbcType=VARCHAR}
   </update>
 </mapper>
