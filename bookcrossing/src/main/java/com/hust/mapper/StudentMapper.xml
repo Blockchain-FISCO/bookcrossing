@@ -1,82 +1,88 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hust.mapper.StudentMapper" >
-  <resultMap id="BaseResultMap" type="com.hust.pojo.Student" >
-    <id column="stu_id" property="stuId" jdbcType="VARCHAR" />
-    <result column="stu_name" property="stuName" jdbcType="VARCHAR" />
-    <result column="scho_id" property="schoId" jdbcType="VARCHAR" />
-    <result column="email_addr" property="emailAddr" jdbcType="VARCHAR" />
-  </resultMap>
-  <sql id="Base_Column_List" >
-    stu_id, stu_name, scho_id, email_addr
-  </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select 
-    <include refid="Base_Column_List" />
-    from stu_map
-    where stu_id = #{stuId,jdbcType=VARCHAR}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
-    delete from stu_map
-    where stu_id = #{stuId,jdbcType=VARCHAR}
-  </delete>
-  <insert id="insert" parameterType="com.hust.pojo.Student" >
-    insert into stu_map (stu_id, stu_name, scho_id, 
-      email_addr)
-    values (#{stuId,jdbcType=VARCHAR}, #{stuName,jdbcType=VARCHAR}, #{schoId,jdbcType=VARCHAR}, 
-      #{emailAddr,jdbcType=VARCHAR})
-  </insert>
-  <insert id="insertSelective" parameterType="com.hust.pojo.Student" >
-    insert into stu_map
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="stuId != null" >
-        stu_id,
-      </if>
-      <if test="stuName != null" >
-        stu_name,
-      </if>
-      <if test="schoId != null" >
-        scho_id,
-      </if>
-      <if test="emailAddr != null" >
-        email_addr,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="stuId != null" >
-        #{stuId,jdbcType=VARCHAR},
-      </if>
-      <if test="stuName != null" >
-        #{stuName,jdbcType=VARCHAR},
-      </if>
-      <if test="schoId != null" >
-        #{schoId,jdbcType=VARCHAR},
-      </if>
-      <if test="emailAddr != null" >
-        #{emailAddr,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.hust.pojo.Student" >
-    update stu_map
-    <set >
-      <if test="stuName != null" >
-        stu_name = #{stuName,jdbcType=VARCHAR},
-      </if>
-      <if test="schoId != null" >
-        scho_id = #{schoId,jdbcType=VARCHAR},
-      </if>
-      <if test="emailAddr != null" >
-        email_addr = #{emailAddr,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where stu_id = #{stuId,jdbcType=VARCHAR}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.hust.pojo.Student" >
-    update stu_map
-    set stu_name = #{stuName,jdbcType=VARCHAR},
-      scho_id = #{schoId,jdbcType=VARCHAR},
-      email_addr = #{emailAddr,jdbcType=VARCHAR}
-    where stu_id = #{stuId,jdbcType=VARCHAR}
-  </update>
+<mapper namespace="com.hust.mapper.StudentMapper">
+	<resultMap id="BaseResultMap" type="com.hust.pojo.Student">
+		<id column="stu_id" property="stuId" jdbcType="VARCHAR" />
+		<result column="stu_name" property="stuName" jdbcType="VARCHAR" />
+		<result column="scho_id" property="schoId" jdbcType="VARCHAR" />
+		<result column="email_addr" property="emailAddr"
+			jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		stu_id, stu_name, scho_id, email_addr
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from stu_map
+		where stu_id = #{stuId,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from stu_map
+		where stu_id = #{stuId,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert" parameterType="com.hust.pojo.Student">
+		insert into stu_map (stu_id, stu_name, scho_id,
+		email_addr)
+		values (#{stuId,jdbcType=VARCHAR}, #{stuName,jdbcType=VARCHAR},
+		#{schoId,jdbcType=VARCHAR},
+		#{emailAddr,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertSelective"
+		parameterType="com.hust.pojo.Student">
+		insert into stu_map
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="stuId != null">
+				stu_id,
+			</if>
+			<if test="stuName != null">
+				stu_name,
+			</if>
+			<if test="schoId != null">
+				scho_id,
+			</if>
+			<if test="emailAddr != null">
+				email_addr,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="stuId != null">
+				#{stuId,jdbcType=VARCHAR},
+			</if>
+			<if test="stuName != null">
+				#{stuName,jdbcType=VARCHAR},
+			</if>
+			<if test="schoId != null">
+				#{schoId,jdbcType=VARCHAR},
+			</if>
+			<if test="emailAddr != null">
+				#{emailAddr,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.hust.pojo.Student">
+		update stu_map
+		<set>
+			<if test="stuName != null">
+				stu_name = #{stuName,jdbcType=VARCHAR},
+			</if>
+			<if test="schoId != null">
+				scho_id = #{schoId,jdbcType=VARCHAR},
+			</if>
+			<if test="emailAddr != null">
+				email_addr = #{emailAddr,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where stu_id = #{stuId,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey"
+		parameterType="com.hust.pojo.Student">
+		update stu_map
+		set stu_name = #{stuName,jdbcType=VARCHAR},
+		scho_id = #{schoId,jdbcType=VARCHAR},
+		email_addr = #{emailAddr,jdbcType=VARCHAR}
+		where stu_id = #{stuId,jdbcType=VARCHAR}
+	</update>
 </mapper>
