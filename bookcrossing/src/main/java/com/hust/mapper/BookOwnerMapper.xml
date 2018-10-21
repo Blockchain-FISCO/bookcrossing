@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hust.mapper.BookOwnerMapper" >
+  <resultMap id="BaseResultMap" type="com.hust.pojo.BookOwner" >
+    <id column="book_id" property="bookId" jdbcType="VARCHAR" />
+    <result column="stu_id" property="stuId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    book_id, stu_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from book_owner
+    where book_id = #{bookId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from book_owner
+    where book_id = #{bookId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.hust.pojo.BookOwner" >
+    insert into book_owner (book_id, stu_id)
+    values (#{bookId,jdbcType=VARCHAR}, #{stuId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hust.pojo.BookOwner" >
+    insert into book_owner
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="bookId != null" >
+        book_id,
+      </if>
+      <if test="stuId != null" >
+        stu_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="bookId != null" >
+        #{bookId,jdbcType=VARCHAR},
+      </if>
+      <if test="stuId != null" >
+        #{stuId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hust.pojo.BookOwner" >
+    update book_owner
+    <set >
+      <if test="stuId != null" >
+        stu_id = #{stuId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where book_id = #{bookId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hust.pojo.BookOwner" >
+    update book_owner
+    set stu_id = #{stuId,jdbcType=VARCHAR}
+    where book_id = #{bookId,jdbcType=VARCHAR}
+  </update>
+</mapper>

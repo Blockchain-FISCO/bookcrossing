@@ -1,62 +1,68 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hust.mapper.SchoolMapper" >
-  <resultMap id="BaseResultMap" type="com.hust.pojo.School" >
-    <id column="scho_id" property="schoId" jdbcType="VARCHAR" />
-    <result column="scho_name" property="schoName" jdbcType="VARCHAR" />
-  </resultMap>
-  <sql id="Base_Column_List" >
-    scho_id, scho_name
-  </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select 
-    <include refid="Base_Column_List" />
-    from school_map
-    where scho_id = #{schoId,jdbcType=VARCHAR}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
-    delete from school_map
-    where scho_id = #{schoId,jdbcType=VARCHAR}
-  </delete>
-  <insert id="insert" parameterType="com.hust.pojo.School" >
-    insert into school_map (scho_id, scho_name)
-    values (#{schoId,jdbcType=VARCHAR}, #{schoName,jdbcType=VARCHAR})
-  </insert>
-  <insert id="insertSelective" parameterType="com.hust.pojo.School" >
-    insert into school_map
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="schoId != null" >
-        scho_id,
-      </if>
-      <if test="schoName != null" >
-        scho_name,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="schoId != null" >
-        #{schoId,jdbcType=VARCHAR},
-      </if>
-      <if test="schoName != null" >
-        #{schoName,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.hust.pojo.School" >
-    update school_map
-    <set >
-      <if test="schoName != null" >
-        scho_name = #{schoName,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where scho_id = #{schoId,jdbcType=VARCHAR}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.hust.pojo.School" >
-    update school_map
-    set scho_name = #{schoName,jdbcType=VARCHAR}
-    where scho_id = #{schoId,jdbcType=VARCHAR}
-  </update>
-  
-  <select id="list" resultMap="BaseResultMap">
-  	select * from school_map
-  </select>
+<mapper namespace="com.hust.mapper.SchoolMapper">
+	<resultMap id="BaseResultMap" type="com.hust.pojo.School">
+		<id column="scho_id" property="schoId" jdbcType="VARCHAR" />
+		<result column="scho_name" property="schoName"
+			jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		scho_id, scho_name
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from school_map
+		where scho_id = #{schoId,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from school_map
+		where scho_id = #{schoId,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert" parameterType="com.hust.pojo.School">
+		insert into school_map (scho_id, scho_name)
+		values (#{schoId,jdbcType=VARCHAR}, #{schoName,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertSelective"
+		parameterType="com.hust.pojo.School">
+		insert into school_map
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="schoId != null">
+				scho_id,
+			</if>
+			<if test="schoName != null">
+				scho_name,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="schoId != null">
+				#{schoId,jdbcType=VARCHAR},
+			</if>
+			<if test="schoName != null">
+				#{schoName,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.hust.pojo.School">
+		update school_map
+		<set>
+			<if test="schoName != null">
+				scho_name = #{schoName,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where scho_id = #{schoId,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey"
+		parameterType="com.hust.pojo.School">
+		update school_map
+		set scho_name = #{schoName,jdbcType=VARCHAR}
+		where scho_id = #{schoId,jdbcType=VARCHAR}
+	</update>
+	
+	<select id="list" resultMap="BaseResultMap">
+  		select * from school_map
+  	</select>
+
 </mapper>

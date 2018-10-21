@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hust.mapper.LocationMapper" >
+  <resultMap id="BaseResultMap" type="com.hust.pojo.Location" >
+    <id column="book_id" property="bookId" jdbcType="VARCHAR" />
+    <result column="stu_id" property="stuId" jdbcType="VARCHAR" />
+    <result column="scho_id" property="schoId" jdbcType="VARCHAR" />
+    <result column="available" property="available" jdbcType="BIT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    book_id, stu_id, scho_id, available
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from book_loc
+    where book_id = #{bookId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from book_loc
+    where book_id = #{bookId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.hust.pojo.Location" >
+    insert into book_loc (book_id, stu_id, scho_id, 
+      available)
+    values (#{bookId,jdbcType=VARCHAR}, #{stuId,jdbcType=VARCHAR}, #{schoId,jdbcType=VARCHAR}, 
+      #{available,jdbcType=BIT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hust.pojo.Location" >
+    insert into book_loc
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="bookId != null" >
+        book_id,
+      </if>
+      <if test="stuId != null" >
+        stu_id,
+      </if>
+      <if test="schoId != null" >
+        scho_id,
+      </if>
+      <if test="available != null" >
+        available,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="bookId != null" >
+        #{bookId,jdbcType=VARCHAR},
+      </if>
+      <if test="stuId != null" >
+        #{stuId,jdbcType=VARCHAR},
+      </if>
+      <if test="schoId != null" >
+        #{schoId,jdbcType=VARCHAR},
+      </if>
+      <if test="available != null" >
+        #{available,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hust.pojo.Location" >
+    update book_loc
+    <set >
+      <if test="stuId != null" >
+        stu_id = #{stuId,jdbcType=VARCHAR},
+      </if>
+      <if test="schoId != null" >
+        scho_id = #{schoId,jdbcType=VARCHAR},
+      </if>
+      <if test="available != null" >
+        available = #{available,jdbcType=BIT},
+      </if>
+    </set>
+    where book_id = #{bookId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hust.pojo.Location" >
+    update book_loc
+    set stu_id = #{stuId,jdbcType=VARCHAR},
+      scho_id = #{schoId,jdbcType=VARCHAR},
+      available = #{available,jdbcType=BIT}
+    where book_id = #{bookId,jdbcType=VARCHAR}
+  </update>
+</mapper>
