@@ -117,7 +117,7 @@ public class BookController {
         book.setPress(request.getParameter("press"));
         book.setPicture(imageUrl+fileName);
         book.setBookDescription(request.getParameter("description"));      
-        //bookService.addBook(book);
+        bookService.addBook(book);
         
 
 		

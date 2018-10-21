@@ -5,6 +5,10 @@
 		<id column="book_id" property="bookId" jdbcType="VARCHAR" />
 		<result column="book_name" property="bookName"
 			jdbcType="VARCHAR" />
+		<result column="picture" property="picture"/>
+		<result column="author" property="author"/>
+		<result column="book_description" property="bookDescription"/>
+		<result column="press" property="press"/>
 	</resultMap>
 	<sql id="Base_Column_List">
 		book_id, book_name
