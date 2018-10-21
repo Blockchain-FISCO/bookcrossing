@@ -1,5 +1,7 @@
 package com.hust.mapper;
 
+import java.util.List;
+
 import com.hust.pojo.Book;
 
 public interface BookMapper {
@@ -14,4 +16,8 @@ public interface BookMapper {
     int updateByPrimaryKeySelective(Book record);
 
     int updateByPrimaryKey(Book record);
+    
+    List<Book> list(int start,int count);
+    
+    int getTotal();
 }

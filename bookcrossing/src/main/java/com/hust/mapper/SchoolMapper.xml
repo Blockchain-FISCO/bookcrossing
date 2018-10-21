@@ -55,4 +55,8 @@
     set scho_name = #{schoName,jdbcType=VARCHAR}
     where scho_id = #{schoId,jdbcType=VARCHAR}
   </update>
+  
+  <select id="list" resultMap="BaseResultMap">
+  	select * from school_map
+  </select>
 </mapper>

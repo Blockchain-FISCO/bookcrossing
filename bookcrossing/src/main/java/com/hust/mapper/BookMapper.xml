@@ -103,4 +103,12 @@
       press = #{press,jdbcType=VARCHAR}
     where book_id = #{bookId,jdbcType=VARCHAR}
   </update>
+  
+  <select id="list" resultMap="BaseResultMap">
+  	SELECT * FROM book_map ORDER BY book_id limit #{param1}, #{param2}
+  </select>
+  
+  <select id="getTotal" resultType="int">
+  	SELECT COUNT(*) FROM book_map 
+  </select>
 </mapper>
