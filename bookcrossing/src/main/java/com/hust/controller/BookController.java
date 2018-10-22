@@ -18,11 +18,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.hust.pojo.Book;
-import com.hust.pojo.BookInfo;
-import com.hust.pojo.HomelistJson;
 import com.hust.pojo.School;
 import com.hust.service.BookService;
 import com.hust.service.SchoolService;
+import com.hust.util.BookInfo;
+import com.hust.util.HomelistJson;
 import com.hust.util.Page;
 
 
@@ -130,7 +130,7 @@ public class BookController {
 	
 	
 	/**
-	 * 
+	 * 以Json格式给安卓端返回主页信息
 	 * @return
 	 */
 	@RequestMapping(value="list")
