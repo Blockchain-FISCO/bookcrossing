@@ -19,5 +19,7 @@ public interface BookMapper {
     
     List<Book> list(int start,int count);
     
+    List<Book> homeList();
+    
     int getTotal();
 }

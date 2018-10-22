@@ -2,6 +2,7 @@ package com.hust.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,9 +14,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.hust.pojo.Book;
+import com.hust.pojo.BookInfo;
+import com.hust.pojo.HomelistJson;
 import com.hust.pojo.School;
 import com.hust.service.BookService;
 import com.hust.service.SchoolService;
@@ -27,7 +31,7 @@ import com.hust.util.Page;
 public class BookController {
 	
 	//图片访问根路径，部署项目时需要修改
-	static String imageUrl="http://127.0.0.1:8080/staticimage/";
+	static String imageUrl="http://202.114.6.155:8080/staticimage/";
 	
 	@Autowired
 	private BookService bookService;
@@ -122,6 +126,35 @@ public class BookController {
 
 		
 		return "redirect:/booklist";
+	}
+	
+	
+	/**
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value="list")
+	@ResponseBody
+	public HomelistJson homelist() {
+		HomelistJson homelistJson=new HomelistJson();
+		
+		List<Book> books = bookService.homeList();
+		
+		int total = bookService.getTotal();
+		homelistJson.setCount(total);
+		
+		List<BookInfo> temp=new ArrayList<BookInfo>();
+				
+		for(Book b: books) {
+			BookInfo bookInfo=new BookInfo();
+			bookInfo.setBook_id(b.getBookId());
+			bookInfo.setBook_name(b.getBookName());
+			bookInfo.setPicture(b.getPicture());;
+			temp.add(bookInfo);
+		}
+		homelistJson.setBooks(temp);
+		
+		return homelistJson;
 	}
 
 }

@@ -38,6 +38,12 @@ public class BookServiceImpl implements BookService {
 		// TODO Auto-generated method stub
 		bookMapper.insert(book);
 	}
+
+	@Override
+	public List<Book> homeList() {
+		// TODO Auto-generated method stub
+		return bookMapper.homeList();
+	}
 	
 	
 }

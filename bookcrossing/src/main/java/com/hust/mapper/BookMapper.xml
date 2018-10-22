@@ -71,4 +71,9 @@
   	<select id="getTotal" resultType="int">
   		SELECT COUNT(*) FROM book_map 
   	</select>
+  	
+  	<select id="homeList" resultMap="BaseResultMap">
+  		SELECT * FROM book_map ORDER BY book_id 
+  	</select>
+  	
 </mapper>
