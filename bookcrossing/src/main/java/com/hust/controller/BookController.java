@@ -38,19 +38,19 @@ public class BookController {
 	@Autowired
 	private SchoolService schoolService;
 	
-	/**
-	 * 测试框架跳转处理
-	 * @param request
-	 * @param model
-	 * @return
-	 */
-	@RequestMapping(value = "test")
-    public String Index(HttpServletRequest request, Model model){
-        int bookId = Integer.parseInt(request.getParameter("id"));
-        Book book = bookService.getBookById(bookId);
-        model.addAttribute("book",book);
-         return "book";
-    }
+//	/**
+//	 * 测试框架跳转处理
+//	 * @param request
+//	 * @param model
+//	 * @return
+//	 */
+//	@RequestMapping(value = "test")
+//    public String Index(HttpServletRequest request, Model model){
+//        int bookId = Integer.parseInt(request.getParameter("id"));
+//        Book book = bookService.getBookById(bookId);
+//        model.addAttribute("book",book);
+//         return "book";
+//    }
 	
 	/**
 	 * 获取图书列表
@@ -123,7 +123,70 @@ public class BookController {
         book.setBookDescription(request.getParameter("description"));      
         bookService.addBook(book);
         
+		return "redirect:/booklist";
+	}
+	
+	
+	/**
+	 * 编辑页面跳转
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value="editBook")
+	public String editBook(HttpServletRequest request) {
+		String bookId=request.getParameter("id");
+		
+		Book book = bookService.getBookById(bookId);
+		request.setAttribute("book", book);
+		
+		return "editbook";
+	}
+	
+	
+	@RequestMapping(value="updateBook")
+	public String updateBook(HttpServletRequest request, @RequestParam(value="picture",required=false) MultipartFile imageFile) throws IllegalStateException, IOException {
+		String fileName = null;
+        if(!imageFile.isEmpty()){
+            //获取项目跟路径
+            String filePath = request.getServletContext().getRealPath("/");
+            //获取项目名
+            String projectName = request.getContextPath();
+            //将项目跟路劲下的项目名称置为空，因为图片需要在项目外的webapp下面存放,sub截取下标为1的字符
+            filePath=filePath.replace(projectName.substring(1),"");
+            //System.out.println(filePath);
+            //重新生成文件名字
+            fileName = UUID.randomUUID()+"."+imageFile.getOriginalFilename().split("\\.")[1];
+            //将文件保存到指定目录
+            imageFile.transferTo(new File(filePath+"staticimage/"+fileName));
+        }
+        
+      //更新图书
+        Book book=new Book();
 
+        if(fileName!=null) {
+        	book.setPicture(imageUrl+fileName);
+        }
+        book.setBookId(request.getParameter("bookid"));
+        book.setAuthor(request.getParameter("author"));
+        book.setBookName(request.getParameter("bookName"));
+        book.setPress(request.getParameter("press"));
+        book.setBookDescription(request.getParameter("description"));
+        
+        bookService.updateBook(book);
+        
+        return "redirect:/booklist";
+	}
+	
+	
+	/**
+	 * 删除书籍
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value="deleteBook")
+	public String deleteBook(HttpServletRequest request) {
+		String bookId = request.getParameter("id");
+		bookService.deleteBookById(bookId);
 		
 		return "redirect:/booklist";
 	}

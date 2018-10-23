@@ -15,10 +15,7 @@
 	</sql>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.String">
-		select
-		<include refid="Base_Column_List" />
-		from book_map
-		where book_id = #{bookId,jdbcType=VARCHAR}
+		select * from book_map where book_id = #{bookId,jdbcType=VARCHAR}
 	</select>
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
 		delete from book_map
@@ -60,7 +57,13 @@
 	<update id="updateByPrimaryKey"
 		parameterType="com.hust.pojo.Book">
 		update book_map
-		set book_name = #{bookName,jdbcType=VARCHAR}
+		set book_name = #{bookName,jdbcType=VARCHAR},
+		author = #{author},
+		book_description = #{bookDescription},
+		press = #{press}
+		<if test="picture != null">
+			, picture = #{picture}
+		</if>
 		where book_id = #{bookId,jdbcType=VARCHAR}
 	</update>
 

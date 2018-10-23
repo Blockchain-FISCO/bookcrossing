@@ -16,9 +16,9 @@ public class BookServiceImpl implements BookService {
 	private BookMapper bookMapper;
 	
 	@Override
-	public Book getBookById(int bookId) {
+	public Book getBookById(String bookId) {
 		// TODO Auto-generated method stub
-		return bookMapper.selectByPrimaryKey(String.valueOf(bookId));
+		return bookMapper.selectByPrimaryKey(bookId);
 	}
 
 	@Override
@@ -43,6 +43,18 @@ public class BookServiceImpl implements BookService {
 	public List<Book> homeList() {
 		// TODO Auto-generated method stub
 		return bookMapper.homeList();
+	}
+
+	@Override
+	public void deleteBookById(String bookId) {
+		// TODO Auto-generated method stub
+		bookMapper.deleteByPrimaryKey(bookId);
+	}
+
+	@Override
+	public void updateBook(Book book) {
+		// TODO Auto-generated method stub
+		bookMapper.updateByPrimaryKey(book);
 	}
 	
 	
