@@ -120,7 +120,6 @@ public class BookController {
         bookService.addBook(book);
         
 
-		
 		return "redirect:/booklist";
 	}
 
