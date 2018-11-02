@@ -22,8 +22,8 @@
 		where book_id = #{bookId,jdbcType=VARCHAR}
 	</delete>
 	<insert id="insert" parameterType="com.hust.pojo.Book">
-		insert into book_map (book_id, book_name)
-		values (#{bookId,jdbcType=VARCHAR}, #{bookName,jdbcType=VARCHAR})
+		insert into book_map (book_id, book_name, picture, author, book_description, press)
+		values (#{bookId}, #{bookName}, #{picture}, #{author}, #{bookDescription}, #{press})
 	</insert>
 	<insert id="insertSelective" parameterType="com.hust.pojo.Book">
 		insert into book_map

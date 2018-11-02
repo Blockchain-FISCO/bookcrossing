@@ -40,4 +40,10 @@ public class Member {
     public void setEmailAddr(String emailAddr) {
         this.emailAddr = emailAddr == null ? null : emailAddr.trim();
     }
+    
+    @Override
+    public String toString() {
+    	// TODO Auto-generated method stub
+    	return "bookid:"+this.getBookId()+"-"+"email:"+this.getEmailAddr()+"-"+"schoid:"+this.getSchoId()+"-"+"stuid:"+this.getStuId();
+    }
 }

@@ -60,4 +60,10 @@ public class Book {
     public void setPress(String press) {
         this.press = press == null ? null : press.trim();
     }
+    
+    @Override
+    public String toString() {
+    	// TODO Auto-generated method stub
+    	return "bookid:"+this.getBookId()+"-bookname:"+this.getBookName()+"-picture:"+this.getPicture()+"-author:"+this.getAuthor()+"-press:"+this.getPress()+"-description:"+this.getBookDescription();
+    }
 }
