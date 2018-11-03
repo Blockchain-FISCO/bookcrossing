@@ -16,35 +16,27 @@ public class UserController {
 	private StudentService studentservice;
 	
 	/**
-	 * 学生信息注册
+	 * 学生信息注册 返回布尔类型
 	 * @param request
 	 * @return 
 	 * @throws
 	 */
 	@RequestMapping(value = "user/register")
 	public String register(HttpServletRequest request) {
-		//新增会员,会员信息在区块链上存储
-		Member member = new Member();		
-		member.setStuId(request.getParameter("stu_id"));
-		member.setSchoId(request.getParameter("scho_id"));
-		member.setBookId(request.getParameter("book_id"));
-		member.setEmailAddr(request.getParameter("email_addr"));
 		
-		studentservice.addMember(member);
-		
-		//更新用作登陆的信息，信息存储在数据库上
+		//更新用作登陆的息，信息存储在数据库上
 		Student student = new Student();
 		student.setStuId(request.getParameter("stu_id"));
-		student.setStuName(request.getParameter("stu_name"));
+		student.setStuName(request.getParameter("scho_name"));
 		student.setPassword(request.getParameter("password"));
 		
 		studentservice.reister(student);
 		
-		return "user/register";		
+		return "user/register";		//调换页面
 	}
 	
 	/**
-	 * 学生信息登陆
+	 * 学生信息登陆  返回布尔类型
 	 * @param request
 	 * @return 
 	 * @throws

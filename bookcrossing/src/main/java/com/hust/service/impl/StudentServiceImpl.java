@@ -14,13 +14,7 @@ public class StudentServiceImpl implements StudentService{
 
 	@Autowired
 	private StudentMapper studentmapper;
-	private MemberMapper membermapper;
-	
-	@Override
-	public void addMember(Member member) {
-		// TODO Auto-generated method stub
-		membermapper.insert(member);
-	}
+
 	@Override
 	public boolean reister(Student student) {
 		// TODO Auto-generated method stub
