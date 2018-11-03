@@ -4,6 +4,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.hust.pojo.Member;
 import com.hust.pojo.Student;
 import com.hust.service.StudentService;
@@ -22,6 +24,7 @@ public class UserController {
 	 * @throws
 	 */
 	@RequestMapping(value = "user/register")
+	@ResponseBody
 	public String register(HttpServletRequest request) {
 		
 		//更新用作登陆的息，信息存储在数据库上
@@ -32,7 +35,7 @@ public class UserController {
 		
 		studentservice.reister(student);
 		
-		return "user/register";		//调换页面
+		return "true";		//调换页面
 	}
 	
 	/**
@@ -42,6 +45,7 @@ public class UserController {
 	 * @throws
 	 */
 	@RequestMapping(value = "user/login")
+	@ResponseBody
 	public String  logIn(HttpServletRequest request) {
 		//获取输入的id和密码
 		Student student = new Student();
@@ -50,8 +54,8 @@ public class UserController {
 		
 		//调用 studentservice 进行信息判断
 		if(studentservice.logIn(student))
-			return "success!";
+			return "ture";
 		
-		return "user/login";		
+		return "false";		
 	}
 }
