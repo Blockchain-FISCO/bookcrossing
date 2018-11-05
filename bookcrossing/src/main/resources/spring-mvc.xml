@@ -11,7 +11,7 @@
                             http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
     <!--避免IE执行AJAX时，返回JSON出现下载文件 -->
     <bean id="mappingJacksonHttpMessageConverter"
-        class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
+        class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
         <property name="supportedMediaTypes">
             <list>
                 <value>text/html;charset=UTF-8</value>
@@ -36,8 +36,7 @@
     <!-- 允许对静态资源文件的访问 -->
     <mvc:default-servlet-handler />
     <!-- 定义跳转的文件的前后缀 ，视图模式配置 -->
-    <bean
-        class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <!-- 这里的配置我的理解是自动给后面action的方法return的字符串加上前缀和后缀，变成一个 可用的url地址 -->
         <property name="prefix" value="/WEB-INF/jsp/" />
         <property name="suffix" value=".jsp" />
@@ -51,5 +50,40 @@
     <!-- 最大文件大小，-1为不限制大小 -->    
     <property name="maxUploadSize" value="-1"/>    
     </bean>  
+    
+    
+    
+    <!-- 系统合约地址配置，在使用./web3sdk SystemProxy|AuthorityFilter等系统合约工具时需要配置 -->
+	<bean id="toolConf" class="org.bcos.contract.tools.ToolConf">
+		<property name="systemProxyAddress" value="0xe8118cee2b608cd84eddce187e7569d3a1ffb270" />
+		<!--GOD账户的私钥-->
+		<property name="privKey" value="0xb56319fd2b95f2402886506c07066262cb4debc98c765c0398e50b14a19a152b" />
+		<!--GOD账户-->
+		<property name="account" value="0x269fc886c0046e20c567c39bfd6f1cab85fe7353" />
+		<property name="outPutpath" value="./output/" />
+	</bean>
+
+	<!-- 区块链节点信息配置 -->
+	<bean id="channelService" class="org.bcos.channel.client.Service">
+		<property name="orgID" value="WB" /> <!-- 配置本机构名称 -->
+			<property name="allChannelConnections">
+				<map>
+					<entry key="WB"> <!-- 配置本机构的区块链节点列表（如有DMZ，则为区块链前置）-->
+						<bean class="org.bcos.channel.handler.ChannelConnections">
+						    <property name="caCertPath" value="classpath:ca.crt" />
+						    <property name="clientKeystorePath" value="classpath:client.keystore" />
+						    <property name="keystorePassWord" value="123seafooler" />
+						    <property name="clientCertPassWord" value="123seafooler" />
+							<property name="connectionsStr">
+								<list>
+									<value>e53eb593c382260166ab4f7ecbc45c73774e3e409e35b89ea55b13972e49db06db5a237e94fcab9f8c9ce68f4ab148fdb6538d5adbf46fd9cbfb235f74613629
+@132.232.199.162:30304</value>
+								</list>
+							</property>
+						</bean>
+					</entry>
+				</map>
+			</property>
+		</bean>
  
 </beans>
