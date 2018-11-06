@@ -21,5 +21,7 @@ public interface BookMapper {
     
     List<Book> homeList();
     
+    List<Book> searchBookByName(String bookName);
+    
     int getTotal();
 }

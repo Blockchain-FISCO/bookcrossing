@@ -34,6 +34,12 @@ public class StudentServiceImpl implements StudentService{
 			return false;
 	}
 
+	@Override
+	public Student getStudentById(String stuId) {
+
+		return studentmapper.selectByPrimaryKey(stuId);
+	}
+
 	
 
 }

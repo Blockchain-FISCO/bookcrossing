@@ -2,24 +2,32 @@ package com.hust.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.bcos.channel.client.Service;
+import org.bcos.web3j.abi.datatypes.Address;
+import org.bcos.web3j.abi.datatypes.Bool;
+import org.bcos.web3j.abi.datatypes.Type;
 import org.bcos.web3j.abi.datatypes.Utf8String;
 import org.bcos.web3j.crypto.Credentials;
 import org.bcos.web3j.crypto.ECKeyPair;
 import org.bcos.web3j.crypto.Keys;
 import org.bcos.web3j.protocol.Web3j;
 import org.bcos.web3j.protocol.channel.ChannelEthereumService;
+import org.bcos.web3j.protocol.core.methods.response.EthBlockNumber;
 import org.bcos.web3j.protocol.core.methods.response.TransactionReceipt;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,15 +36,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.hust.contract.BookClient;
 import com.hust.contract.BookContract;
 import com.hust.pojo.Book;
 import com.hust.pojo.School;
+import com.hust.pojo.Student;
 import com.hust.service.BookService;
 import com.hust.service.SchoolService;
+import com.hust.service.StudentService;
 import com.hust.util.BookDetail;
 import com.hust.util.BookInfo;
 import com.hust.util.HomelistJson;
 import com.hust.util.Page;
+import com.hust.util.SearchResultJson;
 
 
 @Controller
@@ -46,6 +58,7 @@ public class BookController {
 	//图片访问根路径，部署项目时需要修改
 	static String imageUrl="http://202.114.6.59:8080/staticimage/";
 	
+	static Logger logger;
 	public static Web3j web3j;
 	// 初始化交易参数
 	public static java.math.BigInteger gasPrice = new BigInteger("1");
@@ -63,6 +76,8 @@ public class BookController {
 	private BookService bookService;
 	@Autowired
 	private SchoolService schoolService;
+	@Autowired
+	private StudentService studentService;
 	
 	
 	/**
@@ -71,6 +86,7 @@ public class BookController {
 	 */
 	@PostConstruct
 	public void init() throws Exception {
+		logger = Logger.getLogger(BookClient.class);
 		blockchainService.run(); // run the daemon service
 		// init the client keys
 		keyPair = Keys.createEcKeyPair();
@@ -80,8 +96,12 @@ public class BookController {
 
 		// init webj client base on channelEthereumService
 		web3j = Web3j.build(channelEthereumService);
-		System.out.println("=========>初始化成功");
 		bookContract = BookContract.load(contractAddress, web3j, credentials, gasPrice, gasLimit);
+		EthBlockNumber ethBlockNumber = web3j.ethBlockNumber().sendAsync().get();
+	    int startBlockNumber  =ethBlockNumber.getBlockNumber().intValue();
+//	    logger.info("====================================================================================");
+		logger.info("-->Got ethBlockNumber:{"+startBlockNumber+"}");
+		System.out.println("=========>初始化成功");
 	}
 
 
@@ -170,7 +190,7 @@ public class BookController {
         Utf8String _emailAddr= new Utf8String(bookName);
         Utf8String _bookName= new Utf8String(email);
         
-        Future<TransactionReceipt> registerStudent = bookContract.registerStudent(_stuId, _bookId, _emailAddr, _bookName);
+        bookContract.registerStudent(_stuId, _bookId, _emailAddr, _bookName);
         
 		return "redirect:/booklist";
 	}
@@ -282,22 +302,83 @@ public class BookController {
 	 * 查看书籍详情(安卓端)
 	 * @param request
 	 * @return
+	 * @throws ExecutionException 
+	 * @throws InterruptedException 
 	 */
 	@RequestMapping(value="book")
 	@ResponseBody
-	public BookDetail bookDetail(HttpServletRequest request) {
+	public BookDetail bookDetail(HttpServletRequest request) throws InterruptedException, ExecutionException {
 		String bookId=request.getParameter("book_id");
 		Book book = bookService.getBookById(bookId);
+		String available="0";
+		String location="";
+		String stuName="";
+		String email="";
 		
 		BookDetail bookDetail = new BookDetail();
 		bookDetail.setBook_id(bookId);
 		bookDetail.setBook(book);
 		
 		//TODO 根据书籍id,从区块链中获取位置信息
-		bookDetail.setAvailable("1");
-		bookDetail.setLocation("where");
+		Utf8String _bookId = new Utf8String(bookId);
+		Future<List<Type>> checkBookStatus = bookContract.checkBookStatus(_bookId);
+		List<Type> statusResult = checkBookStatus.get();
+		String stuId=((Utf8String)statusResult.get(0)).getValue();
+		Boolean avail=((Bool)statusResult.get(1)).getValue();
+		
+		if(!(stuId.equals(""))) {
+			//学生id不为空，则获取其信息
+			Future<List<Type>> studentInfo = bookContract.getStudent(new Utf8String(stuId));
+			List<Type> stuResult = studentInfo.get();
+			email=((Utf8String)stuResult.get(2)).getValue();
+			stuName=studentService.getStudentById(stuId).getStuName();
+		}
+		
+		
+		if(avail) {
+			//表示当前书籍可借阅
+			available="1";
+			if(stuId.equals("")) {
+				//书籍在学院
+				Future<Utf8String> school = bookContract.getSchoolOfAddress((Address)statusResult.get(2));
+				String schoolName = school.get().getValue();
+				location=schoolName;
+			}else {
+				//书籍在学生手上
+				location=stuName+" "+email;
+			}
+		}else {
+			//当前书籍不可借,在学生手里
+			location=stuName+" "+email;
+		}
+		
+		bookDetail.setAvailable(available);
+		bookDetail.setLocation(location);
+		
 		
 		return bookDetail;
+	}
+	
+	
+	
+	
+	/**
+	 * 搜索结果（返回给安卓端）
+	 * @param request
+	 * @return
+	 * @throws UnsupportedEncodingException 
+	 */
+	@RequestMapping(value="search")
+	@ResponseBody
+	public SearchResultJson search(HttpServletRequest request) throws UnsupportedEncodingException {
+		//解决中文乱码
+		String book_name = new String(request.getParameter("book_name").getBytes("ISO-8859-1"),"UTF-8");
+		List<Book> searchResult = bookService.searchBookByName(book_name);
+		SearchResultJson result=new SearchResultJson();
+		result.setBooks(searchResult);
+		result.setCount(searchResult.size());
+		
+		return result;
 	}
 	
 	
