@@ -2,6 +2,7 @@ package com.hust.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -9,6 +10,9 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.bcos.web3j.crypto.Credentials;
+import org.bcos.web3j.crypto.ECKeyPair;
+import org.bcos.web3j.protocol.Web3j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,12 +22,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.hust.pojo.Book;
-import com.hust.pojo.BookOwner;
-import com.hust.pojo.Member;
 import com.hust.pojo.School;
-import com.hust.service.BookOwnerService;
 import com.hust.service.BookService;
-import com.hust.service.MemberService;
 import com.hust.service.SchoolService;
 import com.hust.util.BookDetail;
 import com.hust.util.BookInfo;
@@ -38,14 +38,20 @@ public class BookController {
 	//图片访问根路径，部署项目时需要修改
 	static String imageUrl="http://202.114.6.59:8080/staticimage/";
 	
+	public static Web3j web3j;
+	// 初始化交易参数
+	public static java.math.BigInteger gasPrice = new BigInteger("1");
+	public static java.math.BigInteger gasLimit = new BigInteger("30000000");
+	public static java.math.BigInteger initialWeiValue = new BigInteger("0");
+	public static ECKeyPair keyPair;
+	public static Credentials credentials;
+    public static String contractAddress = "0x0de201480dd54011f0a7dad5a7b840d614b7993f";
+	
 	@Autowired
 	private BookService bookService;
 	@Autowired
 	private SchoolService schoolService;
-	@Autowired
-	private MemberService memberService;
-	@Autowired
-	private BookOwnerService bookOwnerService;
+
 	
 //	/**
 //	 * 测试框架跳转处理
@@ -134,24 +140,7 @@ public class BookController {
         bookService.addBook(book);
         
         
-        //TODO 区块链操作:1.如果不是会员需要新增-2.添加书籍属主
-        //新增会员
-//        Member exist = memberService.getMemberByStuId(request.getParameter("studentid"));
-//        if(exist==null) {
-//            Member member=new Member();
-//            member.setBookId(request.getParameter("bookid"));
-//            member.setEmailAddr(request.getParameter("email"));
-//            member.setSchoId(request.getParameter("schoid"));
-//            member.setStuId(request.getParameter("studentid"));
-//            memberService.addMember(member);
-//            //System.out.println(member.toString());
-//        }
-//
-//        //添加书籍属主
-//        BookOwner bo=new BookOwner();
-//        bo.setBookId(request.getParameter("bookid"));
-//        bo.setStuId(request.getParameter("studentid"));
-//        bookOwnerService.addBookOwner(bo);
+        //TODO 区块链操作:1.新增会员-2.添加书籍属主
         
         
 		return "redirect:/booklist";
