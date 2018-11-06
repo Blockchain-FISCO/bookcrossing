@@ -122,7 +122,7 @@ public final class BookContract extends Contract {
         return executeCallMultipleValueReturnAsync(function);
     }
     
-    //3 书籍信息管理
+    //3 书籍信息管理相关类
     public Future<List<Type>> getBookInfo(Utf8String _bookId) {
         Function function = new Function("getBookInfo", 
                 Arrays.<Type>asList(_bookId), 
