@@ -10,6 +10,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.bcos.web3j.abi.datatypes.Utf8String;
 import org.bcos.web3j.crypto.Credentials;
 import org.bcos.web3j.crypto.ECKeyPair;
 import org.bcos.web3j.protocol.Web3j;
@@ -20,6 +21,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.bcos.channel.client.TransactionSucCallback;
+import org.bcos.web3j.abi.TypeReference;
+import org.bcos.web3j.abi.datatypes.Address;
+import org.bcos.web3j.abi.datatypes.Bool;
+import org.bcos.web3j.abi.datatypes.Function;
+import org.bcos.web3j.abi.datatypes.Type;
+import org.bcos.web3j.abi.datatypes.Utf8String;
+import org.bcos.web3j.crypto.Credentials;
+import org.bcos.web3j.protocol.Web3j;
+import org.bcos.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.bcos.web3j.tx.Contract;
+import org.bcos.web3j.tx.TransactionManager;
 
 import com.hust.pojo.Book;
 import com.hust.pojo.School;
@@ -30,7 +43,7 @@ import com.hust.util.BookInfo;
 import com.hust.util.HomelistJson;
 import com.hust.util.Page;
 
-
+import com.hust.contract.*;
 @Controller
 @RequestMapping(value = "/")
 public class BookController {
@@ -52,7 +65,6 @@ public class BookController {
 	@Autowired
 	private SchoolService schoolService;
 
-	
 //	/**
 //	 * 测试框架跳转处理
 //	 * @param request
@@ -68,7 +80,7 @@ public class BookController {
 //    }
 	
 	/**
-	 * 获取图书列表
+	 * 获取图书列表（web端）
 	 * @param request
 	 * @return
 	 */
@@ -103,7 +115,7 @@ public class BookController {
 	
 	
 	/**
-	 * 添加新图书
+	 * 添加新图书（web端）
 	 * @param request
 	 * @return
 	 * @throws IOException 
@@ -148,7 +160,7 @@ public class BookController {
 	
 	
 	/**
-	 * 编辑页面跳转
+	 * 编辑页面跳转（web端）
 	 * @param request
 	 * @return
 	 */
@@ -163,7 +175,7 @@ public class BookController {
 	}
 	
 	/**
-	 * 更新图书信息
+	 * 更新图书信息（web端）
 	 * @param request
 	 * @param imageFile
 	 * @return
@@ -206,7 +218,7 @@ public class BookController {
 	
 	
 	/**
-	 * 删除书籍
+	 * 删除书籍（web端）
 	 * @param request
 	 * @return
 	 */
@@ -220,7 +232,7 @@ public class BookController {
 	
 	
 	/**
-	 * 以Json格式给安卓端返回主页信息
+	 * 以Json格式给安卓端返回主页信息（安卓端）
 	 * @return
 	 */
 	@RequestMapping(value="list")
@@ -273,13 +285,20 @@ public class BookController {
 	
 	
 	/**
-	 * 借书功能
+	 * 借书功能（安卓端）
 	 * @param request
 	 * @return
 	 */
 	@RequestMapping(value="borrow")
 	@ResponseBody
 	public String borrowBook(HttpServletRequest request) {
+	    //进行合约类型的实例化
+	    BookContract bookContract = new BookContract(contractAddress,web3j,credentials,gasPrice,gasLimit);
+		Utf8String bookId = new Utf8String(request.getParameter("book_id"));
+		Utf8String stuId = new Utf8String(request.getParameter("stu_id"));
+		
+		bookContract.checkBookStatus((bookId));
+		//Book book = bookService.getBookById(bookId);
 		String status="false";
 		
 		return status;
@@ -287,7 +306,7 @@ public class BookController {
 	
 	
 	/**
-	 * 还书功能
+	 * 还书功能（安卓端）
 	 * @param request
 	 * @return
 	 */
