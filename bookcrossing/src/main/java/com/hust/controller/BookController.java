@@ -309,6 +309,13 @@ public class BookController {
 	@RequestMapping(value="borrow")
 	@ResponseBody
 	public String borrowBook(HttpServletRequest request) {
+		//进行合约类型的实例化
+	    BookContract bookContract = new BookContract(contractAddress,web3j,credentials,gasPrice,gasLimit);
+		Utf8String bookId = new Utf8String(request.getParameter("book_id"));
+		Utf8String stuId = new Utf8String(request.getParameter("stu_id"));
+		
+		bookContract.checkBookStatus((bookId));
+		//Book book = bookService.getBookById(bookId);
 		String status="false";
 		
 		return status;

@@ -30,97 +30,28 @@ public final class BookContract extends Contract {
 
     public static final String ABI = "[{\"constant\":true,\"inputs\":[{\"name\":\"_bookId\",\"type\":\"string\"}],\"name\":\"getBookInfo\",\"outputs\":[{\"name\":\"\",\"type\":\"string\"},{\"name\":\"\",\"type\":\"string\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_studId\",\"type\":\"string\"},{\"name\":\"_bookId\",\"type\":\"string\"},{\"name\":\"_emailAddr\",\"type\":\"string\"},{\"name\":\"_bookName\",\"type\":\"string\"}],\"name\":\"registerStudent\",\"outputs\":[],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_bookId\",\"type\":\"string\"}],\"name\":\"resetBookStatus\",\"outputs\":[],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_schoolName\",\"type\":\"string\"}],\"name\":\"getAddressOfSchool\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_schoolAddress\",\"type\":\"address\"}],\"name\":\"getSchoolOfAddress\",\"outputs\":[{\"name\":\"\",\"type\":\"string\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_bookId\",\"type\":\"string\"},{\"name\":\"_studId\",\"type\":\"string\"}],\"name\":\"borrowBook\",\"outputs\":[],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_schoolName\",\"type\":\"string\"}],\"name\":\"registerSchool\",\"outputs\":[],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_studId\",\"type\":\"string\"}],\"name\":\"getStudent\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"},{\"name\":\"\",\"type\":\"string\"},{\"name\":\"\",\"type\":\"string\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_bookId\",\"type\":\"string\"}],\"name\":\"checkBookStatus\",\"outputs\":[{\"name\":\"\",\"type\":\"string\"},{\"name\":\"\",\"type\":\"bool\"},{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"type\":\"function\"},{\"inputs\":[],\"payable\":false,\"type\":\"constructor\"}]";
 
-    private BookContract(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit, Boolean isInitByName) {
+    /**
+     *合约 构造方法
+     */
+    public BookContract(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit, Boolean isInitByName) {
         super(BINARY, contractAddress, web3j, credentials, gasPrice, gasLimit, isInitByName);
     }
 
-    private BookContract(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit, Boolean isInitByName) {
+    public BookContract(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit, Boolean isInitByName) {
         super(BINARY, contractAddress, web3j, transactionManager, gasPrice, gasLimit, isInitByName);
     }
 
-    private BookContract(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
+    public BookContract(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
         super(BINARY, contractAddress, web3j, credentials, gasPrice, gasLimit, false);
     }
 
-    private BookContract(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
+    public BookContract(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
         super(BINARY, contractAddress, web3j, transactionManager, gasPrice, gasLimit, false);
     }
 
-    public Future<List<Type>> getBookInfo(Utf8String _bookId) {
-        Function function = new Function("getBookInfo", 
-                Arrays.<Type>asList(_bookId), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}, new TypeReference<Utf8String>() {}));
-        return executeCallMultipleValueReturnAsync(function);
-    }
-
-    public Future<TransactionReceipt> registerStudent(Utf8String _studId, Utf8String _bookId, Utf8String _emailAddr, Utf8String _bookName) {
-        Function function = new Function("registerStudent", Arrays.<Type>asList(_studId, _bookId, _emailAddr, _bookName), Collections.<TypeReference<?>>emptyList());
-        return executeTransactionAsync(function);
-    }
-
-    public void registerStudent(Utf8String _studId, Utf8String _bookId, Utf8String _emailAddr, Utf8String _bookName, TransactionSucCallback callback) {
-        Function function = new Function("registerStudent", Arrays.<Type>asList(_studId, _bookId, _emailAddr, _bookName), Collections.<TypeReference<?>>emptyList());
-        executeTransactionAsync(function, callback);
-    }
-
-    public Future<TransactionReceipt> resetBookStatus(Utf8String _bookId) {
-        Function function = new Function("resetBookStatus", Arrays.<Type>asList(_bookId), Collections.<TypeReference<?>>emptyList());
-        return executeTransactionAsync(function);
-    }
-
-    public void resetBookStatus(Utf8String _bookId, TransactionSucCallback callback) {
-        Function function = new Function("resetBookStatus", Arrays.<Type>asList(_bookId), Collections.<TypeReference<?>>emptyList());
-        executeTransactionAsync(function, callback);
-    }
-
-    public Future<Address> getAddressOfSchool(Utf8String _schoolName) {
-        Function function = new Function("getAddressOfSchool", 
-                Arrays.<Type>asList(_schoolName), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
-        return executeCallSingleValueReturnAsync(function);
-    }
-
-    public Future<Utf8String> getSchoolOfAddress(Address _schoolAddress) {
-        Function function = new Function("getSchoolOfAddress", 
-                Arrays.<Type>asList(_schoolAddress), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
-        return executeCallSingleValueReturnAsync(function);
-    }
-
-    public Future<TransactionReceipt> borrowBook(Utf8String _bookId, Utf8String _studId) {
-        Function function = new Function("borrowBook", Arrays.<Type>asList(_bookId, _studId), Collections.<TypeReference<?>>emptyList());
-        return executeTransactionAsync(function);
-    }
-
-    public void borrowBook(Utf8String _bookId, Utf8String _studId, TransactionSucCallback callback) {
-        Function function = new Function("borrowBook", Arrays.<Type>asList(_bookId, _studId), Collections.<TypeReference<?>>emptyList());
-        executeTransactionAsync(function, callback);
-    }
-
-    public Future<TransactionReceipt> registerSchool(Utf8String _schoolName) {
-        Function function = new Function("registerSchool", Arrays.<Type>asList(_schoolName), Collections.<TypeReference<?>>emptyList());
-        return executeTransactionAsync(function);
-    }
-
-    public void registerSchool(Utf8String _schoolName, TransactionSucCallback callback) {
-        Function function = new Function("registerSchool", Arrays.<Type>asList(_schoolName), Collections.<TypeReference<?>>emptyList());
-        executeTransactionAsync(function, callback);
-    }
-
-    public Future<List<Type>> getStudent(Utf8String _studId) {
-        Function function = new Function("getStudent", 
-                Arrays.<Type>asList(_studId), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Utf8String>() {}, new TypeReference<Utf8String>() {}));
-        return executeCallMultipleValueReturnAsync(function);
-    }
-
-    public Future<List<Type>> checkBookStatus(Utf8String _bookId) {
-        Function function = new Function("checkBookStatus", 
-                Arrays.<Type>asList(_bookId), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}, new TypeReference<Bool>() {}, new TypeReference<Address>() {}));
-        return executeCallMultipleValueReturnAsync(function);
-    }
-
+    /**
+     * 个人觉得是相关合约的部署  加载函数
+     */
     public static Future<BookContract> deploy(Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit, BigInteger initialWeiValue) {
         return deployAsync(BookContract.class, web3j, credentials, gasPrice, gasLimit, BINARY, "", initialWeiValue);
     }
@@ -144,4 +75,83 @@ public final class BookContract extends Contract {
     public static BookContract loadByName(String contractName, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
         return new BookContract(contractName, web3j, transactionManager, gasPrice, gasLimit, true);
     }
+    
+    // 1 学院信息管理
+    public Future<TransactionReceipt> registerSchool(Utf8String _schoolName) {
+        Function function = new Function("registerSchool", Arrays.<Type>asList(_schoolName), Collections.<TypeReference<?>>emptyList());
+        return executeTransactionAsync(function);
+    }
+
+    public void registerSchool(Utf8String _schoolName, TransactionSucCallback callback) {
+        Function function = new Function("registerSchool", Arrays.<Type>asList(_schoolName), Collections.<TypeReference<?>>emptyList());
+        executeTransactionAsync(function, callback);
+    }
+    
+    public Future<Address> getAddressOfSchool(Utf8String _schoolName) {
+        Function function = new Function("getAddressOfSchool", 
+                Arrays.<Type>asList(_schoolName), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
+        return executeCallSingleValueReturnAsync(function);
+    }
+
+    public Future<Utf8String> getSchoolOfAddress(Address _schoolAddress) {
+        Function function = new Function("getSchoolOfAddress", 
+                Arrays.<Type>asList(_schoolAddress), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
+        return executeCallSingleValueReturnAsync(function);
+    }
+    
+    //2 学生信息管理
+    public Future<TransactionReceipt> registerStudent(Utf8String _studId, Utf8String _bookId, Utf8String _emailAddr, Utf8String _bookName) {
+        Function function = new Function("registerStudent", Arrays.<Type>asList(_studId, _bookId, _emailAddr, _bookName), Collections.<TypeReference<?>>emptyList());
+        return executeTransactionAsync(function);
+    }
+
+    public void registerStudent(Utf8String _studId, Utf8String _bookId, Utf8String _emailAddr, Utf8String _bookName, TransactionSucCallback callback) {
+        Function function = new Function("registerStudent", Arrays.<Type>asList(_studId, _bookId, _emailAddr, _bookName), Collections.<TypeReference<?>>emptyList());
+        executeTransactionAsync(function, callback);
+    }
+    
+    public Future<List<Type>> getStudent(Utf8String _studId) {
+        Function function = new Function("getStudent", 
+                Arrays.<Type>asList(_studId), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Utf8String>() {}, new TypeReference<Utf8String>() {}));
+        return executeCallMultipleValueReturnAsync(function);
+    }
+    
+    //3 书籍信息管理类
+    public Future<List<Type>> getBookInfo(Utf8String _bookId) {
+        Function function = new Function("getBookInfo", 
+                Arrays.<Type>asList(_bookId), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}, new TypeReference<Utf8String>() {}));
+        return executeCallMultipleValueReturnAsync(function);
+    }
+
+    public Future<List<Type>> checkBookStatus(Utf8String _bookId) {
+        Function function = new Function("checkBookStatus", 
+                Arrays.<Type>asList(_bookId), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}, new TypeReference<Bool>() {}, new TypeReference<Address>() {}));
+        return executeCallMultipleValueReturnAsync(function);
+    }
+    
+    public Future<TransactionReceipt> resetBookStatus(Utf8String _bookId) {
+        Function function = new Function("resetBookStatus", Arrays.<Type>asList(_bookId), Collections.<TypeReference<?>>emptyList());
+        return executeTransactionAsync(function);
+    }
+
+    public void resetBookStatus(Utf8String _bookId, TransactionSucCallback callback) {
+        Function function = new Function("resetBookStatus", Arrays.<Type>asList(_bookId), Collections.<TypeReference<?>>emptyList());
+        executeTransactionAsync(function, callback);
+    }
+
+    public Future<TransactionReceipt> borrowBook(Utf8String _bookId, Utf8String _studId) {
+        Function function = new Function("borrowBook", Arrays.<Type>asList(_bookId, _studId), Collections.<TypeReference<?>>emptyList());
+        return executeTransactionAsync(function);
+    }
+
+    public void borrowBook(Utf8String _bookId, Utf8String _studId, TransactionSucCallback callback) {
+        Function function = new Function("borrowBook", Arrays.<Type>asList(_bookId, _studId), Collections.<TypeReference<?>>emptyList());
+        executeTransactionAsync(function, callback);
+    }
+
 }
