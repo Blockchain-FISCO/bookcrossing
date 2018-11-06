@@ -29,7 +29,7 @@ import com.hust.util.BookDetail;
 import com.hust.util.BookInfo;
 import com.hust.util.HomelistJson;
 import com.hust.util.Page;
-
+import com.hust.contract.*;
 
 @Controller
 @RequestMapping(value = "/")
@@ -300,6 +300,8 @@ public class BookController {
 	@ResponseBody
 	public String borrowBook(HttpServletRequest request) {
 		String status="false";
+		String bookId = request.getParameter("book_id");
+		String stuId = request.getParameter("stu_id");
 		
 		return status;
 	}
