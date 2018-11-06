@@ -62,6 +62,7 @@ public class BookController {
 //    }
 	
 	/**
+	 *web 端代码
 	 * 获取图书列表
 	 * @param request
 	 * @return
@@ -97,6 +98,7 @@ public class BookController {
 	
 	
 	/**
+	 * web 端代码
 	 * 添加新图书
 	 * @param request
 	 * @return
@@ -159,6 +161,7 @@ public class BookController {
 	
 	
 	/**
+	 * web 端代码
 	 * 编辑页面跳转
 	 * @param request
 	 * @return
@@ -174,6 +177,7 @@ public class BookController {
 	}
 	
 	/**
+	 * web 端代码
 	 * 更新图书信息
 	 * @param request
 	 * @param imageFile
@@ -217,6 +221,7 @@ public class BookController {
 	
 	
 	/**
+	 * web 端代码
 	 * 删除书籍
 	 * @param request
 	 * @return
@@ -231,6 +236,7 @@ public class BookController {
 	
 	
 	/**
+	 * 安卓端代码
 	 * 以Json格式给安卓端返回主页信息
 	 * @return
 	 */
@@ -261,6 +267,7 @@ public class BookController {
 	
 	
 	/**
+	 * 安卓端代码
 	 * 查看书籍详情(安卓端)
 	 * @param request
 	 * @return
@@ -284,6 +291,7 @@ public class BookController {
 	
 	
 	/**
+	 * 安卓端代码
 	 * 借书功能
 	 * @param request
 	 * @return
@@ -298,6 +306,7 @@ public class BookController {
 	
 	
 	/**
+	 * 安卓端代码
 	 * 还书功能
 	 * @param request
 	 * @return
