@@ -6,6 +6,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.Future;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -297,8 +298,9 @@ public class BookController {
 		Utf8String bookId = new Utf8String(request.getParameter("book_id"));
 		Utf8String stuId = new Utf8String(request.getParameter("stu_id"));
 		
-		bookContract.checkBookStatus((bookId));
-		//Book book = bookService.getBookById(bookId);
+		Future<List<Type>> book_status = bookContract.checkBookStatus((bookId));
+		Future<TransactionReceipt> borrow = bookContract.borrowBook(bookId, stuId);
+		
 		String status="false";
 		
 		return status;
