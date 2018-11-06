@@ -3,9 +3,7 @@ package com.hust.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.hust.mapper.MemberMapper;
 import com.hust.mapper.StudentMapper;
-import com.hust.pojo.Member;
 import com.hust.pojo.Student;
 import com.hust.service.StudentService;
 

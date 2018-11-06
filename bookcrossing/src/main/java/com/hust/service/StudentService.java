@@ -1,6 +1,5 @@
 package com.hust.service;
 
-import com.hust.pojo.Member;
 import com.hust.pojo.Student;
 
 public interface StudentService {	

@@ -6,7 +6,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.hust.pojo.Member;
 import com.hust.pojo.Student;
 import com.hust.service.StudentService;
 
