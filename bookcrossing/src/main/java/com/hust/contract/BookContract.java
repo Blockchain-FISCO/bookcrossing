@@ -34,26 +34,26 @@ public final class BookContract extends Contract {
     public static final String ABI = "[{\"constant\":true,\"inputs\":[{\"name\":\"_bookId\",\"type\":\"string\"}],\"name\":\"getBookInfo\",\"outputs\":[{\"name\":\"\",\"type\":\"string\"},{\"name\":\"\",\"type\":\"string\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_studId\",\"type\":\"string\"},{\"name\":\"_bookId\",\"type\":\"string\"},{\"name\":\"_emailAddr\",\"type\":\"string\"},{\"name\":\"_bookName\",\"type\":\"string\"}],\"name\":\"registerStudent\",\"outputs\":[],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_bookId\",\"type\":\"string\"}],\"name\":\"resetBookStatus\",\"outputs\":[],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_schoolName\",\"type\":\"string\"}],\"name\":\"getAddressOfSchool\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_schoolAddress\",\"type\":\"address\"}],\"name\":\"getSchoolOfAddress\",\"outputs\":[{\"name\":\"\",\"type\":\"string\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_bookId\",\"type\":\"string\"},{\"name\":\"_studId\",\"type\":\"string\"}],\"name\":\"borrowBook\",\"outputs\":[],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_schoolName\",\"type\":\"string\"}],\"name\":\"registerSchool\",\"outputs\":[],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_studId\",\"type\":\"string\"}],\"name\":\"getStudent\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"},{\"name\":\"\",\"type\":\"string\"},{\"name\":\"\",\"type\":\"string\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_bookId\",\"type\":\"string\"}],\"name\":\"checkBookStatus\",\"outputs\":[{\"name\":\"\",\"type\":\"string\"},{\"name\":\"\",\"type\":\"bool\"},{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"type\":\"function\"},{\"inputs\":[],\"payable\":false,\"type\":\"constructor\"}]";
 
     /**
-                  *合约 构造方法
+     *合约 构造方法
      */
-    private BookContract(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit, Boolean isInitByName) {
+    public BookContract(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit, Boolean isInitByName) {
         super(BINARY, contractAddress, web3j, credentials, gasPrice, gasLimit, isInitByName);
     }
 
-    private BookContract(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit, Boolean isInitByName) {
+    public BookContract(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit, Boolean isInitByName) {
         super(BINARY, contractAddress, web3j, transactionManager, gasPrice, gasLimit, isInitByName);
     }
 
-    private BookContract(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
+    public BookContract(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
         super(BINARY, contractAddress, web3j, credentials, gasPrice, gasLimit, false);
     }
 
-    private BookContract(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
+    public BookContract(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
         super(BINARY, contractAddress, web3j, transactionManager, gasPrice, gasLimit, false);
     }
 
     /**
-                  * 个人觉得是相关合约的部署  加载函数
+     * 个人觉得是相关合约的部署  加载函数
      */
     public static Future<BookContract> deploy(Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit, BigInteger initialWeiValue) {
         return deployAsync(BookContract.class, web3j, credentials, gasPrice, gasLimit, BINARY, "", initialWeiValue);
