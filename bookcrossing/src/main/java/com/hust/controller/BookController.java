@@ -6,13 +6,20 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.Future;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.bcos.channel.client.Service;
+import org.bcos.web3j.abi.datatypes.Utf8String;
 import org.bcos.web3j.crypto.Credentials;
 import org.bcos.web3j.crypto.ECKeyPair;
+import org.bcos.web3j.crypto.Keys;
 import org.bcos.web3j.protocol.Web3j;
+import org.bcos.web3j.protocol.channel.ChannelEthereumService;
+import org.bcos.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.hust.contract.BookContract;
 import com.hust.pojo.Book;
 import com.hust.pojo.School;
 import com.hust.service.BookService;
@@ -46,26 +54,37 @@ public class BookController {
 	public static ECKeyPair keyPair;
 	public static Credentials credentials;
     public static String contractAddress = "0x0de201480dd54011f0a7dad5a7b840d614b7993f";
+    public static BookContract bookContract;
+    //区块链服务
+    @Autowired
+    public Service blockchainService;
 	
 	@Autowired
 	private BookService bookService;
 	@Autowired
 	private SchoolService schoolService;
-
 	
-//	/**
-//	 * 测试框架跳转处理
-//	 * @param request
-//	 * @param model
-//	 * @return
-//	 */
-//	@RequestMapping(value = "test")
-//    public String Index(HttpServletRequest request, Model model){
-//        int bookId = Integer.parseInt(request.getParameter("id"));
-//        Book book = bookService.getBookById(bookId);
-//        model.addAttribute("book",book);
-//         return "book";
-//    }
+	
+	/**
+	 * 区块链服务信息初始化
+	 * @throws Exception
+	 */
+	@PostConstruct
+	public void init() throws Exception {
+		blockchainService.run(); // run the daemon service
+		// init the client keys
+		keyPair = Keys.createEcKeyPair();
+		credentials = Credentials.create(keyPair);
+		ChannelEthereumService channelEthereumService = new ChannelEthereumService();
+		channelEthereumService.setChannelService(blockchainService);
+
+		// init webj client base on channelEthereumService
+		web3j = Web3j.build(channelEthereumService);
+		System.out.println("=========>初始化成功");
+		bookContract = BookContract.load(contractAddress, web3j, credentials, gasPrice, gasLimit);
+	}
+
+
 	
 	/**
 	 * 获取图书列表
@@ -141,7 +160,17 @@ public class BookController {
         
         
         //TODO 区块链操作:1.新增会员-2.添加书籍属主
+        String stuId = request.getParameter("studentid");
+        String bookId = request.getParameter("bookid");
+        String bookName = request.getParameter("bookname");
+        String email = request.getParameter("email");
         
+        Utf8String _stuId= new Utf8String(stuId);
+        Utf8String _bookId= new Utf8String(bookId);
+        Utf8String _emailAddr= new Utf8String(bookName);
+        Utf8String _bookName= new Utf8String(email);
+        
+        Future<TransactionReceipt> registerStudent = bookContract.registerStudent(_stuId, _bookId, _emailAddr, _bookName);
         
 		return "redirect:/booklist";
 	}
