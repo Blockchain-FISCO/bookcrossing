@@ -12,5 +12,5 @@ public interface BookService {
 	public void deleteBookById(String bookId);
 	public int getTotal();
 	public void updateBook(Book book);
-	public List<Book> searchBookByName(String bookName);
+	public List<Book> searchBookByName(String bookName, int start ,int count);
 }

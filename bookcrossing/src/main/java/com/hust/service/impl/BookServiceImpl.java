@@ -58,9 +58,9 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	public List<Book> searchBookByName(String bookName) {
+	public List<Book> searchBookByName(String bookName,int start, int count) {
 		// TODO Auto-generated method stub
-		return bookMapper.searchBookByName(bookName);
+		return bookMapper.searchBookByName(bookName,start,count);
 	}
 	
 	

@@ -371,7 +371,9 @@ public class BookController {
 	public SearchResultJson search(HttpServletRequest request) throws UnsupportedEncodingException {
 		//解决中文乱码
 		String book_name = new String(request.getParameter("book_name").getBytes("ISO-8859-1"),"UTF-8");
-		List<Book> searchResult = bookService.searchBookByName(book_name);
+		int start = Integer.valueOf(request.getParameter("start"));
+		int count = Integer.valueOf(request.getParameter("count"));
+		List<Book> searchResult = bookService.searchBookByName(book_name,start,count);
 		SearchResultJson result=new SearchResultJson();
 		result.setBooks(searchResult);
 		result.setCount(searchResult.size());

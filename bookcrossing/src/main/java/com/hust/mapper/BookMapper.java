@@ -2,6 +2,8 @@ package com.hust.mapper;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.hust.pojo.Book;
 
 public interface BookMapper {
@@ -21,7 +23,7 @@ public interface BookMapper {
     
     List<Book> homeList();
     
-    List<Book> searchBookByName(String bookName);
+    List<Book> searchBookByName(@Param("bookName")String bookName,@Param("start")int start,@Param("count")int count);
     
     int getTotal();
 }
