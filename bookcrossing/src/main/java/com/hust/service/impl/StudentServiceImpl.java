@@ -16,14 +16,21 @@ public class StudentServiceImpl implements StudentService{
 	@Override
 	public boolean reister(Student student) {
 		// TODO Auto-generated method stub
-		studentmapper.insert(student);
-		return true;
+		String stu_id = student.getStuId();
+
+		Student stu = studentmapper.selectByPrimaryKey(stu_id);
+		if(stu.getStuId() == "") {
+			studentmapper.insert(student);
+			return true;
+		}
+			
+		else
+			return false;
 	}
 
 	@Override
 	public boolean logIn(Student student) {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub		
 		String stu_id = student.getStuId();
 		String password = student.getPassword();
 		
