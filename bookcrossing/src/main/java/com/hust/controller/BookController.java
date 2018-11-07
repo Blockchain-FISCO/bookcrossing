@@ -46,6 +46,7 @@ import com.hust.service.SchoolService;
 import com.hust.service.StudentService;
 import com.hust.util.BookDetail;
 import com.hust.util.BookInfo;
+import com.hust.util.BookResultForSearch;
 import com.hust.util.HomelistJson;
 import com.hust.util.Page;
 import com.hust.util.SearchResultJson;
@@ -374,8 +375,15 @@ public class BookController {
 		int start = Integer.valueOf(request.getParameter("start"));
 		int count = Integer.valueOf(request.getParameter("count"));
 		List<Book> searchResult = bookService.searchBookByName(book_name,start,count);
+		//格式转换
+		List<BookResultForSearch> books=new ArrayList<BookResultForSearch>();
+		for(Book b:searchResult) {
+			BookResultForSearch temp = new BookResultForSearch();
+			temp.setBookResult(b);
+			books.add(temp);
+		}
 		SearchResultJson result=new SearchResultJson();
-		result.setBooks(searchResult);
+		result.setBooks(books);
 		result.setCount(searchResult.size());
 		
 		return result;
