@@ -360,8 +360,6 @@ public class BookController {
 	}
 	
 	
-	
-	
 	/**
 	 * 搜索结果（返回给安卓端）
 	 * @param request
@@ -386,18 +384,29 @@ public class BookController {
 	 * 借书功能
 	 * @param request
 	 * @return
+	 * @throws ExecutionException 
+	 * @throws InterruptedException 
 	 */
 	@RequestMapping(value="borrow")
 	@ResponseBody
-	public String borrowBook(HttpServletRequest request) {
-		//进行合约类型的实例化
-	    BookContract bookContract = new BookContract(contractAddress,web3j,credentials,gasPrice,gasLimit);
-		Utf8String bookId = new Utf8String(request.getParameter("book_id"));
+	public String borrowBook(HttpServletRequest request) throws InterruptedException, ExecutionException {
+		String status="false";
+		
+		//从安卓端网络请求中获取基本的请求数据信息
+		Utf8String bookId = new Utf8String(request.getParameter("book_id"));		
 		Utf8String stuId = new Utf8String(request.getParameter("stu_id"));
 		
-		bookContract.checkBookStatus((bookId));
-		//Book book = bookService.getBookById(bookId);
-		String status="false";
+		//TODO 根据书籍id,查询书籍状态
+		Future<List<Type>> checkBookStatus = bookContract.checkBookStatus(bookId);
+		List<Type> statusResult = checkBookStatus.get();
+		Boolean _avail = ((Bool)statusResult.get(1)).getValue();
+
+		//在书籍可借阅的情况下进行借阅，同时返回借阅成功信息
+		if(_avail) {
+			//表示当前书籍可借阅
+			bookContract.borrowBook(bookId, stuId);
+			status = "rue";
+		}
 		
 		return status;
 	}
@@ -410,12 +419,15 @@ public class BookController {
 	 */
 	@RequestMapping(value="return")
 	@ResponseBody
-	public String returnBook(HttpServletRequest request) {
-		String status="false";
+	public String returnBook(HttpServletRequest request) {		
+		//从安卓端网络请求中获取基本的请求数据信息
+		Utf8String bookId = new Utf8String(request.getParameter("book_id"));		
+		
+		bookContract.resetBookStatus(bookId);
+		String status="true";
 		
 		return status;
 		
 	}
 
 }
-
