@@ -13,4 +13,5 @@ public interface BookService {
 	public int getTotal();
 	public void updateBook(Book book);
 	public List<Book> searchBookByName(String bookName, int start ,int count);
+	public List<String> getBorrowedBooksId(String stuId);
 }

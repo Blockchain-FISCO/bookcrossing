@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hust.mapper.BorrowRecordMapper" >
+  <resultMap id="BaseResultMap" type="com.hust.pojo.BorrowRecord" >
+    <id column="book_id" property="bookId" jdbcType="VARCHAR" />
+    <result column="stu_id" property="stuId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    book_id, stu_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from borrow_record
+    where book_id = #{bookId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from borrow_record
+    where book_id = #{bookId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.hust.pojo.BorrowRecord" >
+    insert into borrow_record (book_id, stu_id)
+    values (#{bookId,jdbcType=VARCHAR}, #{stuId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hust.pojo.BorrowRecord" >
+    insert into borrow_record
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="bookId != null" >
+        book_id,
+      </if>
+      <if test="stuId != null" >
+        stu_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="bookId != null" >
+        #{bookId,jdbcType=VARCHAR},
+      </if>
+      <if test="stuId != null" >
+        #{stuId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hust.pojo.BorrowRecord" >
+    update borrow_record
+    <set >
+      <if test="stuId != null" >
+        stu_id = #{stuId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where book_id = #{bookId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hust.pojo.BorrowRecord" >
+    update borrow_record
+    set stu_id = #{stuId,jdbcType=VARCHAR}
+    where book_id = #{bookId,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="getBorrowedBooksId" resultType="java.lang.String">
+  	select book_id from borrow_record where stu_id = #{stuId}
+  </select>
+</mapper>

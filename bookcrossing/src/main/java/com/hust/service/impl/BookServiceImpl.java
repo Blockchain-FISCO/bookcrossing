@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hust.mapper.BookMapper;
+import com.hust.mapper.BorrowRecordMapper;
 import com.hust.pojo.Book;
 import com.hust.service.BookService;
 
@@ -14,6 +15,8 @@ public class BookServiceImpl implements BookService {
 
 	@Autowired
 	private BookMapper bookMapper;
+	@Autowired
+	private BorrowRecordMapper borrowRecordMapper;
 	
 	@Override
 	public Book getBookById(String bookId) {
@@ -61,6 +64,12 @@ public class BookServiceImpl implements BookService {
 	public List<Book> searchBookByName(String bookName,int start, int count) {
 		// TODO Auto-generated method stub
 		return bookMapper.searchBookByName(bookName,start,count);
+	}
+
+	@Override
+	public List<String> getBorrowedBooksId(String stuId) {
+		// TODO Auto-generated method stub
+		return borrowRecordMapper.getBorrowedBooksId(stuId);
 	}
 	
 	

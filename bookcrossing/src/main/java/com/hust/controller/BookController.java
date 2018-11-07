@@ -391,6 +391,34 @@ public class BookController {
 	
 	
 	/**
+	 * 已借书籍，返回格式与搜索相同
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value="borrowed")
+	@ResponseBody
+	public SearchResultJson myBorrowedBooks(HttpServletRequest request) {
+		String stuId = request.getParameter("stu_id");
+		//获得借阅图书的id集合
+		List<String> booksID = bookService.getBorrowedBooksId(stuId);
+		List<BookResultForSearch> books=new ArrayList<BookResultForSearch>();
+		Book tempBook;
+		
+		for(String b_id: booksID) {
+			tempBook=bookService.getBookById(b_id);
+			BookResultForSearch tempResult = new BookResultForSearch();
+			tempResult.setBookResult(tempBook);
+			books.add(tempResult);
+		}
+		
+		SearchResultJson result=new SearchResultJson();
+		result.setBooks(books);
+		result.setCount(booksID.size());
+		return result;
+	}
+	
+	
+	/**
 	 * 借书功能
 	 * @param request
 	 * @return
@@ -399,8 +427,8 @@ public class BookController {
 	 */
 	@RequestMapping(value="borrow")
 	@ResponseBody
-	public String borrowBook(HttpServletRequest request) throws InterruptedException, ExecutionException {
-		String status="false";
+	public Boolean borrowBook(HttpServletRequest request) throws InterruptedException, ExecutionException {
+		Boolean status=false;
 		
 		//从安卓端网络请求中获取基本的请求数据信息
 		Utf8String bookId = new Utf8String(request.getParameter("book_id"));		
@@ -415,7 +443,7 @@ public class BookController {
 		if(_avail) {
 			//表示当前书籍可借阅
 			bookContract.borrowBook(bookId, stuId);
-			status = "rue";
+			status = true;
 		}
 		
 		return status;
@@ -429,12 +457,12 @@ public class BookController {
 	 */
 	@RequestMapping(value="return")
 	@ResponseBody
-	public String returnBook(HttpServletRequest request) {		
+	public Boolean returnBook(HttpServletRequest request) {		
 		//从安卓端网络请求中获取基本的请求数据信息
 		Utf8String bookId = new Utf8String(request.getParameter("book_id"));		
 		
 		bookContract.resetBookStatus(bookId);
-		String status="true";
+		Boolean status=true;
 		
 		return status;
 		
