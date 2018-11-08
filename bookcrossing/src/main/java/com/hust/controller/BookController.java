@@ -39,6 +39,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.hust.contract.BookClient;
 import com.hust.contract.BookContract;
 import com.hust.pojo.Book;
+import com.hust.pojo.BorrowRecord;
 import com.hust.pojo.School;
 import com.hust.pojo.Student;
 import com.hust.service.BookService;
@@ -443,6 +444,11 @@ public class BookController {
 		if(_avail) {
 			//表示当前书籍可借阅
 			bookContract.borrowBook(bookId, stuId);
+			//添加借阅记录
+			BorrowRecord b_record=new BorrowRecord();
+			b_record.setBookId(bookId.getValue());
+			b_record.setStuId(stuId.getValue());
+			bookService.addBorrowedRecord(b_record);;
 			status = true;
 		}
 		
@@ -462,6 +468,8 @@ public class BookController {
 		Utf8String bookId = new Utf8String(request.getParameter("book_id"));		
 		
 		bookContract.resetBookStatus(bookId);
+		//删除还书记录
+		bookService.deleteBorrowedRecord(bookId.getValue());
 		Boolean status=true;
 		
 		return status;
