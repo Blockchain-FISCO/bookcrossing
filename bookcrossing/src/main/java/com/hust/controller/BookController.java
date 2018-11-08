@@ -31,6 +31,7 @@ import org.bcos.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -66,6 +67,7 @@ public class BookController {
 	public static java.math.BigInteger gasPrice = new BigInteger("1");
 	public static java.math.BigInteger gasLimit = new BigInteger("30000000");
 	public static java.math.BigInteger initialWeiValue = new BigInteger("0");
+	public static boolean is_init=false;
 	public static ECKeyPair keyPair;
 	public static Credentials credentials;
     public static String contractAddress = "0x0de201480dd54011f0a7dad5a7b840d614b7993f";
@@ -88,22 +90,25 @@ public class BookController {
 	 */
 	@PostConstruct
 	public void init() throws Exception {
-		logger = Logger.getLogger(BookClient.class);
-		blockchainService.run(); // run the daemon service
-		// init the client keys
-		keyPair = Keys.createEcKeyPair();
-		credentials = Credentials.create(keyPair);
-		ChannelEthereumService channelEthereumService = new ChannelEthereumService();
-		channelEthereumService.setChannelService(blockchainService);
+		if(!is_init) {
+			logger = Logger.getLogger(BookClient.class);
+			blockchainService.run(); // run the daemon service
+			// init the client keys
+			keyPair = Keys.createEcKeyPair();
+			credentials = Credentials.create(keyPair);
+			ChannelEthereumService channelEthereumService = new ChannelEthereumService();
+			channelEthereumService.setChannelService(blockchainService);
 
-		// init webj client base on channelEthereumService
-		web3j = Web3j.build(channelEthereumService);
-		bookContract = BookContract.load(contractAddress, web3j, credentials, gasPrice, gasLimit);
-		EthBlockNumber ethBlockNumber = web3j.ethBlockNumber().sendAsync().get();
-	    int startBlockNumber  =ethBlockNumber.getBlockNumber().intValue();
-//	    logger.info("====================================================================================");
-		logger.info("-->Got ethBlockNumber:{"+startBlockNumber+"}");
-		System.out.println("=========>初始化成功");
+			// init webj client base on channelEthereumService
+			web3j = Web3j.build(channelEthereumService);
+			bookContract = BookContract.load(contractAddress, web3j, credentials, gasPrice, gasLimit);
+			EthBlockNumber ethBlockNumber = web3j.ethBlockNumber().sendAsync().get();
+		    int startBlockNumber  =ethBlockNumber.getBlockNumber().intValue();
+//		    logger.info("====================================================================================");
+			logger.info("-->Got ethBlockNumber:{"+startBlockNumber+"}");
+			System.out.println("=========>初始化成功");
+			is_init=true;
+		}
 	}
 
 
