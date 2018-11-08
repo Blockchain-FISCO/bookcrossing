@@ -33,8 +33,8 @@ public class UserController {
 		//更新用作登陆的息，信息存储在数据库上
 		Student student = new Student();
 		student.setStuId(request.getParameter("stu_id"));
-		student.setStuName(request.getParameter("scho_name"));
-		student.setPassword(request.getParameter("password"));
+		student.setStuName(request.getParameter("stu_name"));
+		student.setPassword(request.getParameter("passwd"));
 			
 		Boolean _flag = studentservice.reister(student);
 		
@@ -64,7 +64,7 @@ public class UserController {
 		//获取输入的id和密码
 		Student student = new Student();
 		student.setStuId(request.getParameter("stu_id"));
-		student.setPassword(request.getParameter("password"));
+		student.setPassword(request.getParameter("passwd"));
 		
 		//调用 studentservice 进行信息判断 ,然后进行消息封装
 		MessageBean res = new MessageBean();
