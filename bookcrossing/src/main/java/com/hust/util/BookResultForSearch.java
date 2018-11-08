@@ -3,9 +3,9 @@ package com.hust.util;
 import com.hust.pojo.Book;
 
 public class BookResultForSearch {
-    private String bookId;
+    private String book_id;
 
-    private String bookName;
+    private String book_name;
 
     private String picture;
 
@@ -13,50 +13,72 @@ public class BookResultForSearch {
 
     private String press;
 
-	public String getBookId() {
-		return bookId;
+
+	
+	public String getBook_id() {
+		return book_id;
 	}
 
-	public void setBookId(String bookId) {
-		this.bookId = bookId;
+
+
+	public void setBook_id(String book_id) {
+		this.book_id = book_id;
 	}
 
-	public String getBookName() {
-		return bookName;
+
+
+	public String getBook_name() {
+		return book_name;
 	}
 
-	public void setBookName(String bookName) {
-		this.bookName = bookName;
+
+
+	public void setBook_name(String book_name) {
+		this.book_name = book_name;
 	}
+
+
 
 	public String getPicture() {
 		return picture;
 	}
 
+
+
 	public void setPicture(String picture) {
 		this.picture = picture;
 	}
+
+
 
 	public String getAuthor() {
 		return author;
 	}
 
+
+
 	public void setAuthor(String author) {
 		this.author = author;
 	}
+
+
 
 	public String getPress() {
 		return press;
 	}
 
+
+
 	public void setPress(String press) {
 		this.press = press;
 	}
-	
+
+
+
 	public void setBookResult(Book book) {
 		this.setAuthor(book.getAuthor());
-		this.setBookId(book.getBookId());
-		this.setBookName(book.getBookName());
+		this.setBook_id(book.getBookId());
+		this.setBook_name(book.getBookName());
 		this.setPicture(book.getPicture());
 		this.setPress(book.getPress());
 	}

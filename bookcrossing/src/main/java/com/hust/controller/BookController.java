@@ -31,6 +31,7 @@ import org.bcos.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -39,6 +40,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.hust.contract.BookClient;
 import com.hust.contract.BookContract;
 import com.hust.pojo.Book;
+import com.hust.pojo.BorrowRecord;
 import com.hust.pojo.School;
 import com.hust.pojo.Student;
 import com.hust.service.BookService;
@@ -65,6 +67,7 @@ public class BookController {
 	public static java.math.BigInteger gasPrice = new BigInteger("1");
 	public static java.math.BigInteger gasLimit = new BigInteger("30000000");
 	public static java.math.BigInteger initialWeiValue = new BigInteger("0");
+	public static boolean is_init=false;
 	public static ECKeyPair keyPair;
 	public static Credentials credentials;
     public static String contractAddress = "0x0de201480dd54011f0a7dad5a7b840d614b7993f";
@@ -87,22 +90,25 @@ public class BookController {
 	 */
 	@PostConstruct
 	public void init() throws Exception {
-		logger = Logger.getLogger(BookClient.class);
-		blockchainService.run(); // run the daemon service
-		// init the client keys
-		keyPair = Keys.createEcKeyPair();
-		credentials = Credentials.create(keyPair);
-		ChannelEthereumService channelEthereumService = new ChannelEthereumService();
-		channelEthereumService.setChannelService(blockchainService);
+		if(!is_init) {
+			logger = Logger.getLogger(BookClient.class);
+			blockchainService.run(); // run the daemon service
+			// init the client keys
+			keyPair = Keys.createEcKeyPair();
+			credentials = Credentials.create(keyPair);
+			ChannelEthereumService channelEthereumService = new ChannelEthereumService();
+			channelEthereumService.setChannelService(blockchainService);
 
-		// init webj client base on channelEthereumService
-		web3j = Web3j.build(channelEthereumService);
-		bookContract = BookContract.load(contractAddress, web3j, credentials, gasPrice, gasLimit);
-		EthBlockNumber ethBlockNumber = web3j.ethBlockNumber().sendAsync().get();
-	    int startBlockNumber  =ethBlockNumber.getBlockNumber().intValue();
-//	    logger.info("====================================================================================");
-		logger.info("-->Got ethBlockNumber:{"+startBlockNumber+"}");
-		System.out.println("=========>初始化成功");
+			// init webj client base on channelEthereumService
+			web3j = Web3j.build(channelEthereumService);
+			bookContract = BookContract.load(contractAddress, web3j, credentials, gasPrice, gasLimit);
+			EthBlockNumber ethBlockNumber = web3j.ethBlockNumber().sendAsync().get();
+		    int startBlockNumber  =ethBlockNumber.getBlockNumber().intValue();
+//		    logger.info("====================================================================================");
+			logger.info("-->Got ethBlockNumber:{"+startBlockNumber+"}");
+			System.out.println("=========>初始化成功");
+			is_init=true;
+		}
 	}
 
 
@@ -443,6 +449,11 @@ public class BookController {
 		if(_avail) {
 			//表示当前书籍可借阅
 			bookContract.borrowBook(bookId, stuId);
+			//添加借阅记录
+			BorrowRecord b_record=new BorrowRecord();
+			b_record.setBookId(bookId.getValue());
+			b_record.setStuId(stuId.getValue());
+			bookService.addBorrowedRecord(b_record);;
 			status = true;
 		}
 		
@@ -462,6 +473,8 @@ public class BookController {
 		Utf8String bookId = new Utf8String(request.getParameter("book_id"));		
 		
 		bookContract.resetBookStatus(bookId);
+		//删除还书记录
+		bookService.deleteBorrowedRecord(bookId.getValue());
 		Boolean status=true;
 		
 		return status;
