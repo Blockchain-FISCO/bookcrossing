@@ -59,7 +59,7 @@ import com.hust.util.SearchResultJson;
 public class BookController {
 	
 	//图片访问根路径，部署项目时需要修改
-	static String imageUrl="http://202.114.6.59:8080/staticimage/";
+	static String imageUrl="http://132.232.199.162:8080/staticimage/";
 	static String school="计算机学院";
 	
 	static Logger logger;
@@ -134,7 +134,7 @@ public class BookController {
         Page page = new Page(start, count);
 
         List<Book> books = bookService.list(page.getStart(), page.getCount());
-        List<School> schools= schoolService.list();
+//        List<School> schools= schoolService.list();
 //        for(int i=0;i<schools.size();i++) {
 //        	System.out.println("---"+schools.get(i).getSchoName());
 //        }
@@ -142,7 +142,7 @@ public class BookController {
         page.setTotal(total);
 
         request.setAttribute("books", books);
-        request.setAttribute("schools", schools);
+//        request.setAttribute("schools", schools);
         request.setAttribute("page", page);
 
         return "booklist";
@@ -195,11 +195,11 @@ public class BookController {
         
         Utf8String _stuId= new Utf8String(stuId);
         Utf8String _bookId= new Utf8String(bookId);
-        Utf8String _emailAddr= new Utf8String(bookName);
-        Utf8String _bookName= new Utf8String(email);
+        Utf8String _emailAddr= new Utf8String(email);
+        Utf8String _bookName= new Utf8String(bookName);
         Utf8String _schoolName=new Utf8String(school);
         
-        
+        //在区块链上添加书籍
         bookContract.registerStudent(_stuId, _bookId, _emailAddr, _bookName, _schoolName);
         
 		return "redirect:/booklist";
@@ -284,12 +284,22 @@ public class BookController {
 	 */
 	@RequestMapping(value="list")
 	@ResponseBody
-	public HomelistJson homelist() {
+	public HomelistJson homelist(HttpServletRequest request) {
 		HomelistJson homelistJson=new HomelistJson();
+		// 获取分页参数
+        int start = 0;
+        int count = 5;
+
+        try {
+            start = Integer.parseInt(request.getParameter("start"));
+            count = Integer.parseInt(request.getParameter("count"));
+        } catch (Exception e) {
+        }
 		
-		List<Book> books = bookService.homeList();
+		//List<Book> books = bookService.homeList();
+        List<Book> books = bookService.list(start, count);
 		
-		int total = bookService.getTotal();
+		int total = books.size();
 		homelistJson.setCount(total);
 		
 		List<BookInfo> temp=new ArrayList<BookInfo>();

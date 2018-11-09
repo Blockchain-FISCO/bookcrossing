@@ -177,14 +177,14 @@
 							<td><input type="text" name="email" id="email"
 								placeholder="请在这里输入电子邮箱"></td>
 						</tr>
-						<tr>
+						<!--  <tr>
 							<td>学院：</td>
 							<td><select id="schoid" name="schoid">
 									<c:forEach items="${schools}" var="s" varStatus="status">
 										<option value="${s.schoId}">${s.schoName}</option>
 									</c:forEach>
 							</select></td>
-						</tr>
+						</tr> -->
 						<tr>
 							<td>上传图片:</td>
 							<td><input type="file" name="picture"></td>
