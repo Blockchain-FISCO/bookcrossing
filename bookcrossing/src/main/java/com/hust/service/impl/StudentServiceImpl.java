@@ -19,7 +19,7 @@ public class StudentServiceImpl implements StudentService{
 		String stu_id = student.getStuId();
 
 		Student stu = studentmapper.selectByPrimaryKey(stu_id);
-		if(stu.getStuId() == "") {
+		if(stu==null) {
 			studentmapper.insert(student);
 			return true;
 		}
@@ -35,7 +35,7 @@ public class StudentServiceImpl implements StudentService{
 		String password = student.getPassword();
 		
 		Student stu = studentmapper.selectByPrimaryKey(stu_id);
-		if(stu.getStuId() == stu_id && stu.getPassword() == password) 
+		if(stu.getStuId().equals(stu_id) && stu.getPassword().equals(password)) 
 			return true;
 		else
 			return false;

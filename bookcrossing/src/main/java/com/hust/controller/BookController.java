@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.hust.contract.BookClient;
-import com.hust.contract.BookContract;
+import com.hust.contract.BookFlow;
 import com.hust.pojo.Book;
 import com.hust.pojo.BorrowRecord;
 import com.hust.pojo.School;
@@ -60,6 +60,7 @@ public class BookController {
 	
 	//图片访问根路径，部署项目时需要修改
 	static String imageUrl="http://202.114.6.59:8080/staticimage/";
+	static String school="计算机学院";
 	
 	static Logger logger;
 	public static Web3j web3j;
@@ -70,8 +71,8 @@ public class BookController {
 	public static boolean is_init=false;
 	public static ECKeyPair keyPair;
 	public static Credentials credentials;
-    public static String contractAddress = "0x0de201480dd54011f0a7dad5a7b840d614b7993f";
-    public static BookContract bookContract;
+    public static String contractAddress = "0xf29f97f8af83358c6cdb9e098fa6f9cf85e64583";
+    public static BookFlow bookContract;
     //区块链服务
     @Autowired
     public Service blockchainService;
@@ -101,7 +102,7 @@ public class BookController {
 
 			// init webj client base on channelEthereumService
 			web3j = Web3j.build(channelEthereumService);
-			bookContract = BookContract.load(contractAddress, web3j, credentials, gasPrice, gasLimit);
+			bookContract = BookFlow.load(contractAddress, web3j, credentials, gasPrice, gasLimit);
 			EthBlockNumber ethBlockNumber = web3j.ethBlockNumber().sendAsync().get();
 		    int startBlockNumber  =ethBlockNumber.getBlockNumber().intValue();
 //		    logger.info("====================================================================================");
@@ -196,8 +197,10 @@ public class BookController {
         Utf8String _bookId= new Utf8String(bookId);
         Utf8String _emailAddr= new Utf8String(bookName);
         Utf8String _bookName= new Utf8String(email);
+        Utf8String _schoolName=new Utf8String(school);
         
-        bookContract.registerStudent(_stuId, _bookId, _emailAddr, _bookName);
+        
+        bookContract.registerStudent(_stuId, _bookId, _emailAddr, _bookName, _schoolName);
         
 		return "redirect:/booklist";
 	}
@@ -347,8 +350,7 @@ public class BookController {
 			available="1";
 			if(stuId.equals("")) {
 				//书籍在学院
-				Future<Utf8String> school = bookContract.getSchoolOfAddress((Address)statusResult.get(2));
-				String schoolName = school.get().getValue();
+				String schoolName = ((Utf8String)statusResult.get(2)).getValue();
 				location=schoolName;
 			}else {
 				//书籍在学生手上

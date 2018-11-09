@@ -4,17 +4,15 @@
 	<resultMap id="BaseResultMap" type="com.hust.pojo.Student">
 		<id column="stu_id" property="stuId" jdbcType="VARCHAR" />
 		<result column="stu_name" property="stuName" jdbcType="VARCHAR" />
-		<result column="scho_id" property="schoId" jdbcType="VARCHAR" />
-		<result column="email_addr" property="emailAddr"
-			jdbcType="VARCHAR" />
+		<result column="password" property="password" jdbcType="VARCHAR" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		stu_id, stu_name, scho_id, email_addr
+		stu_id, stu_name, password
 	</sql>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.String">
 		select
-		<include refid="Base_Column_List" />
+		*
 		from stu_map
 		where stu_id = #{stuId,jdbcType=VARCHAR}
 	</select>
@@ -23,11 +21,9 @@
 		where stu_id = #{stuId,jdbcType=VARCHAR}
 	</delete>
 	<insert id="insert" parameterType="com.hust.pojo.Student">
-		insert into stu_map (stu_id, stu_name, scho_id,
-		email_addr)
+		insert into stu_map (stu_id, stu_name, password)
 		values (#{stuId,jdbcType=VARCHAR}, #{stuName,jdbcType=VARCHAR},
-		#{schoId,jdbcType=VARCHAR},
-		#{emailAddr,jdbcType=VARCHAR})
+		#{password,jdbcType=VARCHAR})
 	</insert>
 	<insert id="insertSelective"
 		parameterType="com.hust.pojo.Student">
