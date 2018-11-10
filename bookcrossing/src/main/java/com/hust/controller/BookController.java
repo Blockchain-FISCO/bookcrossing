@@ -436,6 +436,24 @@ public class BookController {
 	}
 	
 	
+	
+	/**
+	 * 查看书籍是否存在
+	 * @return
+	 */
+	@RequestMapping(value="book_exist")
+	@ResponseBody
+	public Boolean check_book_exist(HttpServletRequest request) {
+		Boolean exist=false;
+		String book_id = request.getParameter("book_id");
+		Book book = bookService.getBookById(book_id);
+		if(book!=null) {
+			exist=true;
+		}
+		
+		return exist;
+	}
+	
 	/**
 	 * 借书功能
 	 * @param request
