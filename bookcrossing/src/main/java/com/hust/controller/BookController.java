@@ -120,7 +120,7 @@ public class BookController {
 
 	
 	/**
-	 * 获取图书列表
+	 * 获取图书列表（Web前端请求）
 	 * @param request
 	 * @return
 	 */
@@ -155,7 +155,7 @@ public class BookController {
 	
 	
 	/**
-	 * 添加新图书
+	 * 添加新图书（Web前端请求）
 	 * @param request
 	 * @return
 	 * @throws IOException 
@@ -217,7 +217,7 @@ public class BookController {
 	
 	
 	/**
-	 * 编辑页面跳转
+	 * 编辑页面跳转（Web前端请求）
 	 * @param request
 	 * @return
 	 */
@@ -232,7 +232,7 @@ public class BookController {
 	}
 	
 	/**
-	 * 更新图书信息
+	 * 更新图书信息（Web前端请求）
 	 * @param request
 	 * @param imageFile
 	 * @return
@@ -275,7 +275,7 @@ public class BookController {
 	
 	
 	/**
-	 * 删除书籍
+	 * 删除书籍（Web前端请求）
 	 * @param request
 	 * @return
 	 */

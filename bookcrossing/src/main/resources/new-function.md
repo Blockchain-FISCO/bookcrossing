@@ -3,11 +3,6 @@
 
 ## 1.后端数据库设计
 
--  ### scho_map (学院)
-```
-  `scho_id` varchar(100)
-  `scho_name` varchar(40)
-```
 -  ### stu_map (学生注册信息)
 ```
   `stu_id` varchar(100)
@@ -23,10 +18,12 @@
   `book_description` varchar(255)
   `press` varchar(40)
 ```
-- ### borrow_record (学生历史借阅记录)
+- ### stu_want_map (学生想看表)
 ```
-  `book_id` varchar(100) 
-  `stu_id` varchar(100)
+  `stu_id` varchar(100) 
+  `stu_name` varchar(40) 
+  `book_id` varchar(100)
+  `want` varchar(40)
 ```
 ---
 
@@ -55,7 +52,7 @@
  uint want;
  uint maxBorrowDuration; // in seconds
  uint startBorrowTime;
-```  
+```
 - ### data_map (相关字段映射)
 ```
  mapping (string => StudentInfo) studentsMap;
@@ -67,7 +64,7 @@
  mapping (string => uint) bookCategoryCountMap;
 ```
 ---
-## 3. 后端接口输入与返回(安卓+微信小程序请求)
+## 3. 后端接口输入与返回(安卓+微信小程序请求)（后台数据库+区块链 -- 学生信息、书籍状态 查询修改）
 
 - ### 3.1.1 学生注册: `/user/register (stu_id, passwd, stu_name)`
 >###### `  返回字段`  `true or false ` 
@@ -125,7 +122,7 @@
     ]
 }
 ```
-- ### 3.2.3 书籍列表--按书籍类别名称搜索 :  `/search?book_categories=x`
+- ### 3.2.3 书籍列表--按书籍类别名称搜索 :  `/search?book_categories=x`  （区块链调用 查询类别数据）
 > ######  `返回字段` `book_id book_name  picture author  book_description  press`
 >
 > ###### `返回格式`
@@ -150,22 +147,24 @@
     ]
 }
 ```
-- ### 3.3.1 具体书籍内容--查看书籍 :  `/book?book_id=x`
+- ### 3.3.1 具体书籍内容--查看书籍 :  `/book?book_id=x` （区块链调用 查询状态数据）
 > ###### `返回字段` `book_id    book_name    picture   author    book_description  press    available    location` `location 字段存储在区块链上，为所在学院的名称或者借走学生的详细信息（scho_name email_addr）`
 
-- ### 3.3.2 具体书籍内容--点击想看 :  `/book?book_id=x`
+- ### 3.3.2 具体书籍内容--点击想看 :  `/book?book_id=x` （区块链调用 更新想看数据）（想看的书籍可以进行排序，然后鼓励大家捐献热门书籍）
 > ###### `  返回字段`  `true or false `
 
-- ### 3.4.1 借书: `/borrow?book_id=x&stu_id=x` 
-> ###### `返回字段` `true or false` `更新 location 字段，以适应借书、归还逻辑` `同时设置结束的最大借阅数量限制（=捐献书籍数量），每次借书的时候进行逻辑判断`
+- ### 3.3.3 “想看”书籍归还--邮件发送:（后台统计每个人所想看的书籍，然后在其想看的书籍被归还后，向该人发送邮件）
 
-- ### 3.4.2 借书剩余时间（剩余天数）: `/borrow?book_id=x&stu_id=x` 
-> ###### `返回字段` `true or false` `更新 location 字段，以适应借书、归还逻辑`
+- ### 3.4.1 借书: `/borrow?book_id=x&stu_id=x` （区块链调用 查询状态数据）
+> ###### `返回字段` `true or false` `更新 location 字段，以适应借书、归还逻辑` `同时设置结束的最大借阅数量限制（= 捐献书籍数量），每次借书的时候进行逻辑判断`
 
-- ### 3.4.3 归还: `/borrow?book_id=x&stu_id=x` 
+- ### 3.4.2 借书剩余时间（剩余天数）: `/borrow?book_id=x&stu_id=x` （区块链调用 查询状态数据）
+> ###### `返回字段` stu_id  book_id left_date` 
+
+- ### 3.4.3 归还: `/borrow?book_id=x&stu_id=x` （区块链调用 更新状态数据）
 > ###### `返回字段` `true or false` `更新 location 字段，以适应借书、归还逻辑`
-> 
-- ### 3.4.4 已借书籍: `/borrowed?stu_id=x`
+>
+- ### 3.4.4 已借书籍: `/borrowed?stu_id=x` （区块链调用 查询状态数据）
 >###### `返回字段` `book_id   book_name    picture   author   book_description  press   available   location` `location 字段存储在区块链上`
 >###### `返回格式`
 ```
@@ -190,7 +189,7 @@
 }
 ```
 
-## 4. 后端接口输入与返回(web端系统管理员请求)
+## 4. 后端接口输入与返回(web端系统管理员请求)（后台数据库--书籍修改）
 - ### 4..1 获取图书列表 :  `/booklist`
 
 - ### 4.2 添加书籍 :  `/addBook`
