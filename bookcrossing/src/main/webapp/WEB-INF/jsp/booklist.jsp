@@ -71,7 +71,7 @@
 					<th>书号</th>
 					<th>书名</th>
 					<th>作者</th>
-					<th>简介</th>
+					<!-- <th>简介</th> -->
 					<th>出版社</th>
 					<th>编辑</th>
 					<th>删除</th>
@@ -84,7 +84,7 @@
 						<td>${b.bookId}</td>
 						<td>${b.bookName}</td>
 						<td>${b.author}</td>
-						<td>${b.bookDescription}</td>
+						<!-- <td>${b.bookDescription}</td> -->
 						<td>${b.press}</td>
 						<td><a href="editBook?id=${b.bookId}"><span
 								class="glyphicon glyphicon-edit"></span> </a></td>
