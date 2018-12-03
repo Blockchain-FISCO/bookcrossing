@@ -44,6 +44,7 @@ import com.hust.contract.BookFlow;
 import com.hust.pojo.Book;
 import com.hust.pojo.BorrowRecord;
 import com.hust.pojo.Student;
+import com.hust.pojo.Want_book;
 import com.hust.service.BookService;
 import com.hust.service.StudentService;
 import com.hust.util.BookDetail;
@@ -194,8 +195,8 @@ public class BookController {
         String bookName = request.getParameter("bookname");
         String email = request.getParameter("email");
         //以下字段后台需要提供
-        String bookCategory="计算机类";
-        
+        String bookCategory=request.getParameter("category");
+
         
         Utf8String _stuId= new Utf8String(stuId);
         Utf8String _bookId= new Utf8String(bookId);
@@ -546,13 +547,31 @@ public class BookController {
 	@RequestMapping(value="like")
 	@ResponseBody
 	public Boolean likeBook(HttpServletRequest request) {
-		//获取请求数据
-		Utf8String _bookId = new Utf8String(request.getParameter("book_id"));		
-		Utf8String _stuId = new Utf8String(request.getParameter("stu_id"));
-		
-		bookContract.wantBook(_bookId, _stuId);
-		
 		Boolean status=true;
+		//获取请求数据
+		String book_id = request.getParameter("book_id");
+		String stu_id = request.getParameter("stu_id");
+		
+		Utf8String _bookId = new Utf8String(book_id);		
+		Utf8String _stuId = new Utf8String(stu_id);
+		
+		//检查该用户是否点击过想看
+		Want_book result = bookService.getWant_bookBySIdABId(book_id, stu_id);
+		if(result==null) {
+			String wantId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+			Want_book record=new Want_book();
+			record.setWantId(wantId);
+			record.setBookId(book_id);
+			record.setStuId(stu_id);
+			bookService.insert(record);
+			//区块链操作
+			//bookContract.wantBook(_bookId, _stuId);
+		}else {
+			//已经点击过想看
+			status=false;
+		}
+		
+		
 		return status;
 	}
 

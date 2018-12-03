@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hust.mapper.want_bookMapper" >
-  <resultMap id="BaseResultMap" type="com.hust.pojo.want_book" >
+  <resultMap id="BaseResultMap" type="com.hust.pojo.Want_book" >
     <id column="want_id" property="wantId" jdbcType="VARCHAR" />
     <result column="stu_id" property="stuId" jdbcType="VARCHAR" />
     <result column="book_id" property="bookId" jdbcType="VARCHAR" />
@@ -19,13 +19,13 @@
     delete from want_book
     where want_id = #{wantId,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="com.hust.pojo.want_book" >
+  <insert id="insert" parameterType="com.hust.pojo.Want_book" >
     insert into want_book (want_id, stu_id, book_id
       )
     values (#{wantId,jdbcType=VARCHAR}, #{stuId,jdbcType=VARCHAR}, #{bookId,jdbcType=VARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.hust.pojo.want_book" >
+  <insert id="insertSelective" parameterType="com.hust.pojo.Want_book" >
     insert into want_book
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="wantId != null" >
@@ -50,7 +50,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.hust.pojo.want_book" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.hust.pojo.Want_book" >
     update want_book
     <set >
       <if test="stuId != null" >
@@ -62,10 +62,17 @@
     </set>
     where want_id = #{wantId,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.hust.pojo.want_book" >
+  <update id="updateByPrimaryKey" parameterType="com.hust.pojo.Want_book" >
     update want_book
     set stu_id = #{stuId,jdbcType=VARCHAR},
       book_id = #{bookId,jdbcType=VARCHAR}
     where want_id = #{wantId,jdbcType=VARCHAR}
   </update>
+  
+  <select id="selectBySIdAndBId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    *
+    from want_book
+    where book_id= #{param1} and stu_id = #{param2}
+  </select>
 </mapper>

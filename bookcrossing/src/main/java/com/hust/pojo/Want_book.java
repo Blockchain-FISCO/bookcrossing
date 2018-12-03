@@ -1,6 +1,6 @@
 package com.hust.pojo;
 
-public class want_book {
+public class Want_book {
     private String wantId;
 
     private String stuId;

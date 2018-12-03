@@ -7,8 +7,10 @@ import org.springframework.stereotype.Service;
 
 import com.hust.mapper.BookMapper;
 import com.hust.mapper.BorrowRecordMapper;
+import com.hust.mapper.want_bookMapper;
 import com.hust.pojo.Book;
 import com.hust.pojo.BorrowRecord;
+import com.hust.pojo.Want_book;
 import com.hust.service.BookService;
 
 @Service
@@ -18,6 +20,8 @@ public class BookServiceImpl implements BookService {
 	private BookMapper bookMapper;
 	@Autowired
 	private BorrowRecordMapper borrowRecordMapper;
+	@Autowired
+	private want_bookMapper wantBookMapper;
 	
 	@Override
 	public Book getBookById(String bookId) {
@@ -83,6 +87,18 @@ public class BookServiceImpl implements BookService {
 	public void deleteBorrowedRecord(String bookId) {
 		// TODO Auto-generated method stub
 		borrowRecordMapper.deleteByPrimaryKey(bookId);
+	}
+
+	@Override
+	public Want_book getWant_bookBySIdABId(String book_id, String stu_id) {
+		// TODO Auto-generated method stub
+		return wantBookMapper.selectBySIdAndBId(book_id, stu_id);
+	}
+
+	@Override
+	public void insert(Want_book record) {
+		// TODO Auto-generated method stub
+		wantBookMapper.insert(record);
 	}
 	
 	

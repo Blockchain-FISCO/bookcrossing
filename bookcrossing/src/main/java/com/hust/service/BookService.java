@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.hust.pojo.Book;
 import com.hust.pojo.BorrowRecord;
+import com.hust.pojo.Want_book;
 
 public interface BookService {
 	public Book getBookById(String bookId);
@@ -17,4 +18,6 @@ public interface BookService {
 	public List<String> getBorrowedBooksId(String stuId);
 	public void addBorrowedRecord(BorrowRecord record);
 	public void deleteBorrowedRecord(String bookId);
+	public Want_book getWant_bookBySIdABId(String book_id,String stu_id);
+	public void insert(Want_book record);
 }

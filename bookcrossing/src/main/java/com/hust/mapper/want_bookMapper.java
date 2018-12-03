@@ -1,17 +1,19 @@
 package com.hust.mapper;
 
-import com.hust.pojo.want_book;
+import com.hust.pojo.Want_book;
 
 public interface want_bookMapper {
     int deleteByPrimaryKey(String wantId);
 
-    int insert(want_book record);
+    int insert(Want_book record);
 
-    int insertSelective(want_book record);
+    int insertSelective(Want_book record);
 
-    want_book selectByPrimaryKey(String wantId);
+    Want_book selectByPrimaryKey(String wantId);
 
-    int updateByPrimaryKeySelective(want_book record);
+    int updateByPrimaryKeySelective(Want_book record);
 
-    int updateByPrimaryKey(want_book record);
+    int updateByPrimaryKey(Want_book record);
+    
+    Want_book selectBySIdAndBId(String book_id,String stu_id);
 }

@@ -186,6 +186,22 @@
 							</select></td>
 						</tr> -->
 						<tr>
+							<td>书籍类别:</td>
+							<td>
+								<select name="category">
+									<option value="教育">教育</option>
+									<option value="小说">小说</option>
+									<option value="文艺">文艺</option>
+									<option value="青春文学">青春文学</option>
+									<option value="童书">童书</option>
+									<option value="人文社科">人文社科</option>
+									<option value="经管">经管</option>
+									<option value="生活">生活</option>
+									<option value="科技">科技</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
 							<td>上传图片:</td>
 							<td><input type="file" name="picture"></td>
 						</tr>
@@ -200,8 +216,7 @@
 							</td>
 
 						</tr>
-
-					</table>
+					</table> 
 				</form>
 			</div>
 		</div>
