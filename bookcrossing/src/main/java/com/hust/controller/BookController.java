@@ -43,10 +43,8 @@ import com.hust.contract.BookClient;
 import com.hust.contract.BookFlow;
 import com.hust.pojo.Book;
 import com.hust.pojo.BorrowRecord;
-import com.hust.pojo.School;
 import com.hust.pojo.Student;
 import com.hust.service.BookService;
-import com.hust.service.SchoolService;
 import com.hust.service.StudentService;
 import com.hust.util.BookDetail;
 import com.hust.util.BookInfo;
@@ -84,8 +82,6 @@ public class BookController {
 	
 	@Autowired
 	private BookService bookService;
-	@Autowired
-	private SchoolService schoolService;
 	@Autowired
 	private StudentService studentService;
 	
