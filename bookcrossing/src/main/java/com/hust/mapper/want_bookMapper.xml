@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hust.mapper.want_bookMapper" >
+  <resultMap id="BaseResultMap" type="com.hust.pojo.want_book" >
+    <id column="want_id" property="wantId" jdbcType="VARCHAR" />
+    <result column="stu_id" property="stuId" jdbcType="VARCHAR" />
+    <result column="book_id" property="bookId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    want_id, stu_id, book_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from want_book
+    where want_id = #{wantId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from want_book
+    where want_id = #{wantId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.hust.pojo.want_book" >
+    insert into want_book (want_id, stu_id, book_id
+      )
+    values (#{wantId,jdbcType=VARCHAR}, #{stuId,jdbcType=VARCHAR}, #{bookId,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hust.pojo.want_book" >
+    insert into want_book
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="wantId != null" >
+        want_id,
+      </if>
+      <if test="stuId != null" >
+        stu_id,
+      </if>
+      <if test="bookId != null" >
+        book_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="wantId != null" >
+        #{wantId,jdbcType=VARCHAR},
+      </if>
+      <if test="stuId != null" >
+        #{stuId,jdbcType=VARCHAR},
+      </if>
+      <if test="bookId != null" >
+        #{bookId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hust.pojo.want_book" >
+    update want_book
+    <set >
+      <if test="stuId != null" >
+        stu_id = #{stuId,jdbcType=VARCHAR},
+      </if>
+      <if test="bookId != null" >
+        book_id = #{bookId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where want_id = #{wantId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hust.pojo.want_book" >
+    update want_book
+    set stu_id = #{stuId,jdbcType=VARCHAR},
+      book_id = #{bookId,jdbcType=VARCHAR}
+    where want_id = #{wantId,jdbcType=VARCHAR}
+  </update>
+</mapper>
