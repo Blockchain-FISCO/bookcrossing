@@ -20,6 +20,7 @@ import org.bcos.web3j.abi.datatypes.Address;
 import org.bcos.web3j.abi.datatypes.Bool;
 import org.bcos.web3j.abi.datatypes.Type;
 import org.bcos.web3j.abi.datatypes.Utf8String;
+import org.bcos.web3j.abi.datatypes.generated.Uint256;
 import org.bcos.web3j.crypto.Credentials;
 import org.bcos.web3j.crypto.ECKeyPair;
 import org.bcos.web3j.crypto.Keys;
@@ -37,6 +38,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.hust.contract.Book5;
 import com.hust.contract.BookClient;
 import com.hust.contract.BookFlow;
 import com.hust.pojo.Book;
@@ -49,7 +51,9 @@ import com.hust.service.StudentService;
 import com.hust.util.BookDetail;
 import com.hust.util.BookInfo;
 import com.hust.util.BookResultForSearch;
+import com.hust.util.BorrowedBooksJson;
 import com.hust.util.HomelistJson;
+import com.hust.util.MyBorrowedBooks;
 import com.hust.util.Page;
 import com.hust.util.SearchResultJson;
 
@@ -61,6 +65,7 @@ public class BookController {
 	//图片访问根路径，部署项目时需要修改
 	static String imageUrl="http://132.232.199.162:8080/staticimage/";
 	static String school="计算机学院";
+	static double secondsInADay=60*60*24; //秒*分*小时
 	
 	static Logger logger;
 	public static Web3j web3j;
@@ -71,8 +76,8 @@ public class BookController {
 	public static boolean is_init=false;
 	public static ECKeyPair keyPair;
 	public static Credentials credentials;
-    public static String contractAddress = "0xf29f97f8af83358c6cdb9e098fa6f9cf85e64583";
-    public static BookFlow bookContract;
+    public static String contractAddress = "0x7ea3487d9082671e8d9c297986d82200b138174a";
+    public static Book5 bookContract;
     //区块链服务
     @Autowired
     public Service blockchainService;
@@ -102,7 +107,7 @@ public class BookController {
 
 			// init webj client base on channelEthereumService
 			web3j = Web3j.build(channelEthereumService);
-			bookContract = BookFlow.load(contractAddress, web3j, credentials, gasPrice, gasLimit);
+			bookContract = Book5.load(contractAddress, web3j, credentials, gasPrice, gasLimit);
 			EthBlockNumber ethBlockNumber = web3j.ethBlockNumber().sendAsync().get();
 		    int startBlockNumber  =ethBlockNumber.getBlockNumber().intValue();
 //		    logger.info("====================================================================================");
@@ -192,15 +197,20 @@ public class BookController {
         String bookId = request.getParameter("bookid");
         String bookName = request.getParameter("bookname");
         String email = request.getParameter("email");
+        //以下字段后台需要提供
+        String bookCategory="计算机类";
+        
         
         Utf8String _stuId= new Utf8String(stuId);
         Utf8String _bookId= new Utf8String(bookId);
         Utf8String _emailAddr= new Utf8String(email);
         Utf8String _bookName= new Utf8String(bookName);
         Utf8String _schoolName=new Utf8String(school);
+        Utf8String _bookCategory = new Utf8String(bookCategory);
+        
         
         //在区块链上添加书籍
-        bookContract.registerStudent(_stuId, _bookId, _emailAddr, _bookName, _schoolName);
+        bookContract.registerStudent(_stuId, _bookId, _emailAddr, _bookName, _schoolName,_bookCategory);
         
 		return "redirect:/booklist";
 	}
@@ -412,24 +422,43 @@ public class BookController {
 	 * 已借书籍，返回格式与搜索相同
 	 * @param request
 	 * @return
+	 * @throws ExecutionException 
+	 * @throws InterruptedException 
 	 */
 	@RequestMapping(value="borrowed")
 	@ResponseBody
-	public SearchResultJson myBorrowedBooks(HttpServletRequest request) {
+	public BorrowedBooksJson myBorrowedBooks(HttpServletRequest request) throws InterruptedException, ExecutionException {
 		String stuId = request.getParameter("stu_id");
 		//获得借阅图书的id集合
 		List<String> booksID = bookService.getBorrowedBooksId(stuId);
-		List<BookResultForSearch> books=new ArrayList<BookResultForSearch>();
+		List<MyBorrowedBooks> books=new ArrayList<MyBorrowedBooks>();
 		Book tempBook;
 		
 		for(String b_id: booksID) {
 			tempBook=bookService.getBookById(b_id);
-			BookResultForSearch tempResult = new BookResultForSearch();
+			MyBorrowedBooks tempResult = new MyBorrowedBooks();
 			tempResult.setBookResult(tempBook);
+						
+			//从链上获取书籍状态
+			Utf8String _bookId = new Utf8String(b_id);
+			Future<List<Type>> checkOverdue = bookContract.checkOverdue(_bookId);
+			List<Type> checkresult = checkOverdue.get();
+			Boolean isOutOfDays = ((Bool)checkresult.get(0)).getValue();
+			
+			
+			//还在借阅时间内,则计算出剩余天数
+			if(!isOutOfDays) {
+				BigInteger leftTimeInSeconds = ((Uint256)checkresult.get(1)).getValue();
+				//取上界的整数
+				int leftDays=(int)Math.ceil(leftTimeInSeconds.doubleValue()/secondsInADay);
+				tempResult.setLeftDays(leftDays);
+			}
+			
+			
 			books.add(tempResult);
 		}
 		
-		SearchResultJson result=new SearchResultJson();
+		BorrowedBooksJson result=new BorrowedBooksJson();
 		result.setBooks(books);
 		result.setCount(booksID.size());
 		return result;
@@ -502,13 +531,33 @@ public class BookController {
 		//从安卓端网络请求中获取基本的请求数据信息
 		Utf8String bookId = new Utf8String(request.getParameter("book_id"));		
 		
-		bookContract.resetBookStatus(bookId);
+		bookContract.returnBook(bookId);
 		//删除还书记录
 		bookService.deleteBorrowedRecord(bookId.getValue());
 		Boolean status=true;
 		
 		return status;
 		
+	}
+	
+	
+	
+	/**
+	 * 点击想看书籍
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value="like")
+	@ResponseBody
+	public Boolean likeBook(HttpServletRequest request) {
+		//获取请求数据
+		Utf8String _bookId = new Utf8String(request.getParameter("book_id"));		
+		Utf8String _stuId = new Utf8String(request.getParameter("stu_id"));
+		
+		bookContract.wantBook(_bookId, _stuId);
+		
+		Boolean status=true;
+		return status;
 	}
 
 }
