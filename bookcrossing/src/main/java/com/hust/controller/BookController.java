@@ -522,6 +522,12 @@ public class BookController {
 			b_record.setBookId(bookId.getValue());
 			b_record.setStuId(stuId.getValue());
 			bookService.addBorrowedRecord(b_record);;
+			
+			//在want表中删除对应条目
+			Want_book want_stu = new Want_book();
+			want_stu.setBookId(bookId.getValue());
+			want_stu.setStuId(stuId.getValue());
+			bookService.deleteWant_bookBySIdABId(bookId.getValue(), stuId.getValue());
 			status = true;
 		}
 		
@@ -535,6 +541,7 @@ public class BookController {
 	public void sendMail(String bookId) {
 		List<Want_book> want_stu_list = bookService.getWant_bookByBId(bookId);
 		List<String> mail_address_list = null;
+		
 		for(int i = 0; i< want_stu_list.size(); i++) {
 			Want_book want_stu = want_stu_list.get(i);
 			Utf8String _stuId = new Utf8String(want_stu.getStuId());
@@ -580,15 +587,15 @@ public class BookController {
 	@ResponseBody
 	public Boolean returnBook(HttpServletRequest request) {		
 		//从安卓端网络请求中获取基本的请求数据信息
-		Utf8String bookId = new Utf8String(request.getParameter("book_id"));		
-		
+		Utf8String bookId = new Utf8String(request.getParameter("book_id"));				
 		bookContract.returnBook(bookId);
+		
 		//删除还书记录
 		bookService.deleteBorrowedRecord(bookId.getValue());
 		Boolean status=true;
 		
 		//在还书后进行邮件发送
-		sendMail(request.getParameter("book_id"));
+		sendMail(bookId.getValue());
 		return status;		
 	}	
 	

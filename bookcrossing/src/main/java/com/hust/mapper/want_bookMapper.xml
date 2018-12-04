@@ -15,16 +15,24 @@
     from want_book
     where want_id = #{wantId,jdbcType=VARCHAR}
   </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from want_book
     where want_id = #{wantId,jdbcType=VARCHAR}
   </delete>
+  
+  <delete id="deleteBySIdAndBId" parameterType="java.lang.String" >
+    delete from want_book
+    where book_id= #{param1} and stu_id = #{param2}
+  </delete>
+  
   <insert id="insert" parameterType="com.hust.pojo.Want_book" >
     insert into want_book (want_id, stu_id, book_id
       )
     values (#{wantId,jdbcType=VARCHAR}, #{stuId,jdbcType=VARCHAR}, #{bookId,jdbcType=VARCHAR}
       )
   </insert>
+  
   <insert id="insertSelective" parameterType="com.hust.pojo.Want_book" >
     insert into want_book
     <trim prefix="(" suffix=")" suffixOverrides="," >
@@ -50,6 +58,7 @@
       </if>
     </trim>
   </insert>
+  
   <update id="updateByPrimaryKeySelective" parameterType="com.hust.pojo.Want_book" >
     update want_book
     <set >
@@ -62,6 +71,7 @@
     </set>
     where want_id = #{wantId,jdbcType=VARCHAR}
   </update>
+  
   <update id="updateByPrimaryKey" parameterType="com.hust.pojo.Want_book" >
     update want_book
     set stu_id = #{stuId,jdbcType=VARCHAR},

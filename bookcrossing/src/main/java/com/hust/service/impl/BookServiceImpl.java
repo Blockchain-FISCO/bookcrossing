@@ -112,6 +112,12 @@ public class BookServiceImpl implements BookService {
 		// TODO Auto-generated method stub	
 		return wantBookMapper.selectByBId(book_id);
 	}
+
+	@Override
+	public void deleteWant_bookBySIdABId(String book_id, String stu_id) {
+		// TODO Auto-generated method stub
+		wantBookMapper.deleteBySIdAndBId(book_id, stu_id);
+	}
 	
 	
 }

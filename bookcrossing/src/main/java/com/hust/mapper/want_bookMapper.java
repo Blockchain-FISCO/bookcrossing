@@ -6,6 +6,8 @@ import com.hust.pojo.Want_book;
 
 public interface want_bookMapper {
     int deleteByPrimaryKey(String wantId);
+    
+    int deleteBySIdAndBId(String book_id,String stu_id);
 
     int insert(Want_book record);
 
