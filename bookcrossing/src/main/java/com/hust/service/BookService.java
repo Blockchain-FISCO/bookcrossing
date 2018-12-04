@@ -20,4 +20,5 @@ public interface BookService {
 	public void deleteBorrowedRecord(String bookId);
 	public Want_book getWant_bookBySIdABId(String book_id,String stu_id);
 	public void insert(Want_book record);
+	public List<Book> getBooksByTag(String book_id_list, int start, int count);
 }

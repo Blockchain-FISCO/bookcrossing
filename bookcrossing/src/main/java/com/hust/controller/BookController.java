@@ -397,8 +397,18 @@ public class BookController {
 	public SearchResultJson search(HttpServletRequest request) throws UnsupportedEncodingException {
 		//解决中文乱码
 		String book_name = new String(request.getParameter("book_name").getBytes("ISO-8859-1"),"UTF-8");
-		int start = Integer.valueOf(request.getParameter("start"));
-		int count = Integer.valueOf(request.getParameter("count"));
+		// 获取分页参数
+        int start = 0;
+        int count = 5;
+
+        try {
+            start = Integer.parseInt(request.getParameter("start"));
+            count = Integer.parseInt(request.getParameter("count"));
+        } catch (Exception e) {
+        	
+        }
+
+        
 		List<Book> searchResult = bookService.searchBookByName(book_name,start,count);
 		//格式转换
 		List<BookResultForSearch> books=new ArrayList<BookResultForSearch>();
@@ -416,7 +426,7 @@ public class BookController {
 	
 	
 	/**
-	 * 已借书籍，返回格式与搜索相同
+	 * 已借书籍
 	 * @param request
 	 * @return
 	 * @throws ExecutionException 
@@ -565,7 +575,7 @@ public class BookController {
 			record.setStuId(stu_id);
 			bookService.insert(record);
 			//区块链操作
-			//bookContract.wantBook(_bookId, _stuId);
+			bookContract.wantBook(_bookId, _stuId);
 		}else {
 			//已经点击过想看
 			status=false;
@@ -574,5 +584,51 @@ public class BookController {
 		
 		return status;
 	}
+	
+	
+	/**
+	 * 根据标签返回书籍列表,返回格式与搜索相同
+	 * @param request
+	 * @return
+	 * @throws UnsupportedEncodingException 
+	 * @throws ExecutionException 
+	 * @throws InterruptedException 
+	 */
+	@RequestMapping(value="tagBooks")
+	@ResponseBody
+	public SearchResultJson tagBookList(HttpServletRequest request) throws UnsupportedEncodingException, InterruptedException, ExecutionException {
+		//解决中文乱码
+		String tag_name = new String(request.getParameter("tag_name").getBytes("ISO-8859-1"),"UTF-8");
+		
+		// 获取分页参数
+        int start = 0;
+        int count = 5;
 
+        try {
+            start = Integer.parseInt(request.getParameter("start"));
+            count = Integer.parseInt(request.getParameter("count"));
+        } catch (Exception e) {
+        	
+        }
+		
+		//根据标签从区块链上获取书籍id列表
+		Utf8String _bookCategory = new Utf8String(tag_name);
+		Future<Utf8String> booksOfCategory = bookContract.getBooksOfCategory(_bookCategory);
+		String bookList = ((Utf8String)booksOfCategory.get()).getValue();
+		String book_id_list =bookList.replace(" ", "|");
+		List<Book> booksInTag = bookService.getBooksByTag(book_id_list, start, count);
+		
+		//格式转换
+		List<BookResultForSearch> books=new ArrayList<BookResultForSearch>();
+		for(Book b:booksInTag) {
+			BookResultForSearch temp = new BookResultForSearch();
+			temp.setBookResult(b);
+			books.add(temp);
+		}
+		SearchResultJson result=new SearchResultJson();
+		result.setBooks(books);
+		result.setCount(booksInTag.size());
+		
+		return result;
+	}
 }

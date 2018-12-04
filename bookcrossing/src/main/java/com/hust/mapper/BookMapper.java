@@ -26,4 +26,6 @@ public interface BookMapper {
     List<Book> searchBookByName(@Param("bookName")String bookName,@Param("start")int start,@Param("count")int count);
     
     int getTotal();
+    
+    List<Book> getBooksByTag(@Param("book_id_list")String book_id_list,@Param("start")int start,@Param("count")int count);
 }

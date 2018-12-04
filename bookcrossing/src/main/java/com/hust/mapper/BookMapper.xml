@@ -83,4 +83,8 @@
   		SELECT * FROM book_map WHERE book_name like CONCAT('%',#{bookName},'%') limit #{start}, #{count}
   	</select>
   	
+  	<select id="getBooksByTag" resultMap="BaseResultMap">
+  		SELECT * FROM book_map WHERE book_id REGEXP #{book_id_list} limit #{start}, #{count}
+  	</select>
+  	
 </mapper>

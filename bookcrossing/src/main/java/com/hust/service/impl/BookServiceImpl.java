@@ -100,6 +100,12 @@ public class BookServiceImpl implements BookService {
 		// TODO Auto-generated method stub
 		wantBookMapper.insert(record);
 	}
+
+	@Override
+	public List<Book> getBooksByTag(String book_id_list, int start, int count) {
+		// TODO Auto-generated method stub
+		return bookMapper.getBooksByTag(book_id_list, start, count);
+	}
 	
 	
 }
