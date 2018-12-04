@@ -75,4 +75,11 @@
     from want_book
     where book_id= #{param1} and stu_id = #{param2}
   </select>
+  
+  <select id="selectByBId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    *
+    from want_book
+    where stu_id = #{param2}
+  </select>
 </mapper>

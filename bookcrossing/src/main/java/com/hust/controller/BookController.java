@@ -41,6 +41,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.hust.contract.Book5;
 import com.hust.contract.BookClient;
 import com.hust.contract.BookFlow;
+import com.hust.mail.MailSender;
+import com.hust.mail.MailSenderInfoBean;
 import com.hust.pojo.Book;
 import com.hust.pojo.BorrowRecord;
 import com.hust.pojo.Student;
@@ -526,6 +528,48 @@ public class BookController {
 		return status;
 	}
 	
+	/**
+	 * 还书后功能 -- 发送邮件
+	 * @return
+	 */
+	public void sendMail(String bookId) {
+		List<Want_book> want_stu_list = bookService.getWant_bookByBId(bookId);
+		List<String> mail_address_list = null;
+		for(int i = 0; i< want_stu_list.size(); i++) {
+			Want_book want_stu = want_stu_list.get(i);
+			Utf8String _stuId = new Utf8String(want_stu.getStuId());
+			
+			Future<List<Type>> student_info_list = bookContract.getStudent(_stuId);			
+			try {
+				List<Type> student_info_result = student_info_list.get();
+				String mail_address = ((Utf8String)student_info_result.get(1)).getValue();
+				mail_address_list.add(mail_address);
+			} catch (InterruptedException | ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		MailSenderInfoBean mailInfo = new MailSenderInfoBean();
+		
+		mailInfo.setMailServerHost("smtp.qq.com");      
+		mailInfo.setMailServerPort("25");     
+		mailInfo.setValidate(true);        
+		mailInfo.setUserName("1055296551@qq.com");    
+		mailInfo.setPassword("?");//您的邮箱密码        
+	    mailInfo.setFromAddress("1055296551@qq.com");
+		mailInfo.setToAddress(mail_address_list);     
+		mailInfo.setSubject("图书漂流");        
+		mailInfo.setContent("您想阅读的书籍目前已经归还，请您及时借阅");     
+		
+//		List<String> attachFileNames = new ArrayList<String>();       
+//		 //此处是你要得到的上传附件的文件路径        
+//		attachFileNames.add("pom.xml");   
+//		mailInfo.setAttachFileNames(attachFileNames);  
+		
+		MailSender sender = new MailSender();
+		sender.sendTextMail(mailInfo);	
+	}
 	
 	/**
 	 * 还书功能
@@ -543,11 +587,10 @@ public class BookController {
 		bookService.deleteBorrowedRecord(bookId.getValue());
 		Boolean status=true;
 		
-		return status;
-		
-	}
-	
-	
+		//在还书后进行邮件发送
+		sendMail(request.getParameter("book_id"));
+		return status;		
+	}	
 	
 	/**
 	 * 点击想看书籍

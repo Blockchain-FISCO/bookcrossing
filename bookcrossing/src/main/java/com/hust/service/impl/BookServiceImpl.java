@@ -106,6 +106,12 @@ public class BookServiceImpl implements BookService {
 		// TODO Auto-generated method stub
 		return bookMapper.getBooksByTag(book_id_list, start, count);
 	}
+
+	@Override
+	public List<Want_book> getWant_bookByBId(String book_id) {
+		// TODO Auto-generated method stub	
+		return wantBookMapper.selectByBId(book_id);
+	}
 	
 	
 }
