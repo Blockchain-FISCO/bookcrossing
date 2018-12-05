@@ -25,4 +25,6 @@ public interface want_bookMapper {
     Want_book selectBySIdAndBId(String book_id,String stu_id);
     
     List<Want_book> selectByBId(String book_id);
+    
+    List<Want_book> selectBySId(String stu_id);
 }

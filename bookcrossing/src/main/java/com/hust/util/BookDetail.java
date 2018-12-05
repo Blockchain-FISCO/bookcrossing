@@ -88,6 +88,15 @@ public class BookDetail{
 		this.location = location;
 	}
 
+	
+	public int getLikeCount() {
+		return likeCount;
+	}
+
+
+	public void setLikeCount(int likeCount) {
+		this.likeCount = likeCount;
+	}
 
 	private String book_id;
     private String book_name;
@@ -97,8 +106,10 @@ public class BookDetail{
     private String press;
 	private String available;
 	private String location;
+	private int likeCount;
 
-	
+
+
 	public void setBook(Book book) {
 		this.setAuthor(book.getAuthor());
 		this.setBook_description(book.getBookDescription());

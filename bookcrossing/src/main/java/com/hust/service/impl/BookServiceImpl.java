@@ -143,5 +143,10 @@ public class BookServiceImpl implements BookService {
 		return borrowRecordMapper.getAllBorrowedBooks();
 	}
 
+	@Override
+	public List<Want_book> getWant_bookBySId(String stu_id) {
+		// TODO Auto-generated method stub
+		return wantBookMapper.selectBySId(stu_id);
+	}
 	
 }

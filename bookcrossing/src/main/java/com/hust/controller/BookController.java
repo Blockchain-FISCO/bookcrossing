@@ -60,6 +60,7 @@ import com.hust.util.BookInfo;
 import com.hust.util.BookResultForSearch;
 import com.hust.util.BorrowedBooksJson;
 import com.hust.util.HomelistJson;
+import com.hust.util.MessageBean;
 import com.hust.util.MyBorrowedBooks;
 import com.hust.util.Page;
 import com.hust.util.SearchResultJson;
@@ -516,6 +517,9 @@ public class BookController {
 		List<Type> statusResult = checkBookStatus.get();
 		String stuId=((Utf8String)statusResult.get(0)).getValue();
 		Boolean avail=((Bool)statusResult.get(1)).getValue();
+		//设置想看数量
+		BigInteger wantCount = ((Uint256)statusResult.get(2)).getValue();
+		bookDetail.setLikeCount(wantCount.intValue());
 		
 		if(!(stuId.equals(""))) {
 			//学生id不为空，则获取其信息
@@ -766,10 +770,10 @@ public class BookController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value="like")
+	@RequestMapping(value="book/like")
 	@ResponseBody
-	public Boolean likeBook(HttpServletRequest request) {
-		Boolean status=true;
+	public MessageBean likeBook(HttpServletRequest request) {
+		MessageBean status=new MessageBean();
 		//获取请求数据
 		String book_id = request.getParameter("book_id");
 		String stu_id = request.getParameter("stu_id");
@@ -788,13 +792,71 @@ public class BookController {
 			bookService.insert(record);
 			//区块链操作
 			bookContract.wantBook(_bookId, _stuId);
+			status.setResult(200);
+			status.setErrMsg("success");
 		}else {
 			//已经点击过想看
-			status=false;
+			status.setResult(500);;
+			status.setErrMsg("err");
 		}
 		
 		
 		return status;
+	}
+	
+	
+	/**
+	 * 	判断用户是否点击过想看
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value="book/liked")
+	@ResponseBody
+	public MessageBean likedBook(HttpServletRequest request) {
+		MessageBean status=new MessageBean();
+		//获取请求数据
+		String book_id = request.getParameter("book_id");
+		String stu_id = request.getParameter("stu_id");
+		
+		//检查该用户是否点击过想看
+		Want_book result = bookService.getWant_bookBySIdABId(book_id, stu_id);
+		if(result==null) {
+			status.setResult(500);;
+			status.setErrMsg("none");
+		}else {
+			//已经点击过想看
+			status.setResult(200);
+			status.setErrMsg("liked");
+		}
+		
+		
+		return status;
+	}
+	
+	/**
+	 * 	获取用户想看列表
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value="book/likeList")
+	@ResponseBody
+	public SearchResultJson liskeList(HttpServletRequest request) {
+		String stu_id=request.getParameter("stu_id");
+		List<Want_book> wantList = bookService.getWant_bookBySId(stu_id);
+		SearchResultJson result=new SearchResultJson();
+		List<BookResultForSearch> books=new ArrayList<BookResultForSearch>();
+		
+		for(Want_book wb:wantList) {
+			Book tempBook = bookService.getBookById(wb.getBookId());
+			BookResultForSearch tbrs=new BookResultForSearch();
+			tbrs.setBookResult(tempBook);
+			books.add(tbrs);
+		}
+		
+		result.setBooks(books);
+		result.setCount(wantList.size());
+		
+		return result;
 	}
 	
 	

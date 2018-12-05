@@ -101,6 +101,14 @@
     select 
     *
     from want_book
-    where stu_id = #{param2}
+    where book_id = #{param1}
   </select>
+  
+  <select id="selectBySId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    *
+    from want_book
+    where stu_id = #{stu_id}
+  </select>
+  
 </mapper>
