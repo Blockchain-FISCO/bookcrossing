@@ -33,6 +33,8 @@ import org.bcos.web3j.protocol.core.methods.response.EthBlockNumber;
 import org.bcos.web3j.protocol.core.methods.response.TransactionReceipt;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -41,7 +43,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.hust.contract.Book5;
+import com.hust.contract.Book6;
 import com.hust.contract.BookClient;
 import com.hust.contract.BookFlow;
 import com.hust.mail.MailSender;
@@ -63,6 +65,7 @@ import com.hust.util.Page;
 import com.hust.util.SearchResultJson;
 
 
+@EnableScheduling
 @Controller
 @RequestMapping(value = "/")
 public class BookController {
@@ -78,11 +81,10 @@ public class BookController {
 	public static java.math.BigInteger gasPrice = new BigInteger("1");
 	public static java.math.BigInteger gasLimit = new BigInteger("30000000");
 	public static java.math.BigInteger initialWeiValue = new BigInteger("0");
-	public static boolean is_init=false;
 	public static ECKeyPair keyPair;
 	public static Credentials credentials;
-    public static String contractAddress = "0x7ea3487d9082671e8d9c297986d82200b138174a";
-    public static Book5 bookContract;
+    public static String contractAddress = "0x5c1c0fcfb3820199e28afbd248c73f353300e6f2";
+    public static Book6 bookContract;
     //区块链服务
     @Autowired
     public Service blockchainService;
@@ -99,25 +101,24 @@ public class BookController {
 	 */
 	@PostConstruct
 	public void init() throws Exception {
-		if(!is_init) {
-			logger = Logger.getLogger(BookClient.class);
-			blockchainService.run(); // run the daemon service
-			// init the client keys
-			keyPair = Keys.createEcKeyPair();
-			credentials = Credentials.create(keyPair);
-			ChannelEthereumService channelEthereumService = new ChannelEthereumService();
-			channelEthereumService.setChannelService(blockchainService);
 
-			// init webj client base on channelEthereumService
-			web3j = Web3j.build(channelEthereumService);
-			bookContract = Book5.load(contractAddress, web3j, credentials, gasPrice, gasLimit);
-			EthBlockNumber ethBlockNumber = web3j.ethBlockNumber().sendAsync().get();
-		    int startBlockNumber  =ethBlockNumber.getBlockNumber().intValue();
+		logger = Logger.getLogger(BookClient.class);
+		blockchainService.run(); // run the daemon service
+		// init the client keys
+		keyPair = Keys.createEcKeyPair();
+		credentials = Credentials.create(keyPair);
+		ChannelEthereumService channelEthereumService = new ChannelEthereumService();
+		channelEthereumService.setChannelService(blockchainService);
+
+		// init webj client base on channelEthereumService
+		web3j = Web3j.build(channelEthereumService);
+		bookContract = Book6.load(contractAddress, web3j, credentials, gasPrice, gasLimit);
+		EthBlockNumber ethBlockNumber = web3j.ethBlockNumber().sendAsync().get();
+		int startBlockNumber = ethBlockNumber.getBlockNumber().intValue();
 //		    logger.info("====================================================================================");
-			logger.info("-->Got ethBlockNumber:{"+startBlockNumber+"}");
-			System.out.println("=========>初始化成功");
-			is_init=true;
-		}
+		logger.info("-->Got ethBlockNumber:{" + startBlockNumber + "}");
+		System.out.println("=========>初始化成功");
+
 	}
 
 
@@ -843,5 +844,29 @@ public class BookController {
 		return result;
 	}
 	
-	
+	/**
+	 * 根据流行度更新书籍借阅时间
+	 * @throws ExecutionException 
+	 * @throws InterruptedException 
+	 */
+	@Scheduled(cron = "0 0 0 * * ? ") // 每天24点执行一次
+	public void UpdateBorrowDuration() throws InterruptedException, ExecutionException {
+		//从borrow_record中获取已经借出去的书籍列表
+		List<String> allBorrowedBookId = bookService.getAllBorrowedBooks();
+		
+		for(String b_id : allBorrowedBookId) {
+			Utf8String _bookId = new Utf8String(b_id);
+			Future<List<Type>> checkOverdue = bookContract.checkOverdue(_bookId);
+			List<Type> checkresult = checkOverdue.get();
+			Boolean isOutOfDays = ((Bool)checkresult.get(0)).getValue();
+			
+			if(isOutOfDays) {
+				//已经超出借阅时间，智能合约自动还书，需要删除对应数据库的记录
+				bookService.deleteBorrowedRecord(b_id);
+			}else {
+				//未超出借阅时间，则根据想看数量更新最长借阅时间
+			}
+		}
+	}
+
 }

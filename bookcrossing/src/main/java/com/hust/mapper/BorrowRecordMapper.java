@@ -18,4 +18,6 @@ public interface BorrowRecordMapper {
     int updateByPrimaryKey(BorrowRecord record);
     
     List<String> getBorrowedBooksId(String stuId);
+    
+    List<String> getAllBorrowedBooks();
 }

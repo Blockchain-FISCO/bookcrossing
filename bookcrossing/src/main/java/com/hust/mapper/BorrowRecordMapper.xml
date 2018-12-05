@@ -59,4 +59,9 @@
   <select id="getBorrowedBooksId" resultType="java.lang.String">
   	select book_id from borrow_record where stu_id = #{stuId}
   </select>
+  
+  <select id="getAllBorrowedBooks" resultType="java.lang.String">
+  	select book_id from borrow_record
+  </select>
+  
 </mapper>

@@ -44,7 +44,7 @@
 			<param-name>contextConfigLocation</param-name>
 			<param-value>classpath:spring-mvc.xml</param-value>
 		</init-param>
-		<load-on-startup>1</load-on-startup>
+		<!-- 该配置会使得controller加载两次 <load-on-startup>1</load-on-startup> -->
 		<async-supported>true</async-supported>
 	</servlet>
 	<servlet-mapping>

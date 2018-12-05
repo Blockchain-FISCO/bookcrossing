@@ -137,6 +137,11 @@ public class BookServiceImpl implements BookService {
 		// TODO Auto-generated method stub
 		wantBookMapper.deleteBySIdAndBId(book_id, stu_id);
 	}
+	
+	public List<String> getAllBorrowedBooks() {
+		// TODO Auto-generated method stub
+		return borrowRecordMapper.getAllBorrowedBooks();
+	}
 
 	
 }
