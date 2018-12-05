@@ -148,5 +148,11 @@ public class BookServiceImpl implements BookService {
 		// TODO Auto-generated method stub
 		return wantBookMapper.selectBySId(stu_id);
 	}
+
+	@Override
+	public List<Book> listOfSameBook(String bookName) {
+		// TODO Auto-generated method stub
+		return bookMapper.listOfSameBook(bookName);
+	}
 	
 }

@@ -87,4 +87,8 @@
   		SELECT * FROM book_map WHERE book_id REGEXP #{book_id_list} limit #{start}, #{count}
   	</select>
   	
+  	<select id="listOfSameBook" resultMap="BaseResultMap">
+  		SELECT * FROM book_map WHERE book_name = #{bookName}
+  	</select>
+  	
 </mapper>

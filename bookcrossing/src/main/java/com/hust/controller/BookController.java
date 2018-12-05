@@ -72,7 +72,7 @@ import com.hust.util.SearchResultJson;
 public class BookController {
 	
 	//图片访问根路径，部署项目时需要修改
-	static String imageUrl="http://132.232.199.162:8080/staticimage/";
+	static String imageUrl="D:/apache-tomcat-7.0.91/webapps/staticimage";//http://132.232.199.162:8080
 	static String school="计算机学院";
 	static double secondsInADay=60*60*24; //秒*分*小时
 	
@@ -525,7 +525,7 @@ public class BookController {
 			//学生id不为空，则获取其信息
 			Future<List<Type>> studentInfo = bookContract.getStudent(new Utf8String(stuId));
 			List<Type> stuResult = studentInfo.get();
-			email=((Utf8String)stuResult.get(2)).getValue();
+			email=((Utf8String)stuResult.get(1)).getValue();
 			stuName=studentService.getStudentById(stuId).getStuName();
 		}
 		
@@ -880,23 +880,33 @@ public class BookController {
         	
         }
 		
+        //格式转换
+      	List<BookResultForSearch> books=new ArrayList<BookResultForSearch>();
+		SearchResultJson result=new SearchResultJson();
+		
 		//根据标签从区块链上获取书籍id列表
 		Utf8String _bookCategory = new Utf8String(tag_name);
 		Future<Utf8String> booksOfCategory = bookContract.getBooksOfCategory(_bookCategory);
-		String bookList = ((Utf8String)booksOfCategory.get()).getValue();
-		String book_id_list =bookList.replace(" ", "|");
-		List<Book> booksInTag = bookService.getBooksByTag(book_id_list, start, count);
+		Utf8String utfString = booksOfCategory.get();
 		
-		//格式转换
-		List<BookResultForSearch> books=new ArrayList<BookResultForSearch>();
-		for(Book b:booksInTag) {
-			BookResultForSearch temp = new BookResultForSearch();
-			temp.setBookResult(b);
-			books.add(temp);
+		//书籍列表不为空
+		if(utfString!=null) {
+			String bookList=((Utf8String)booksOfCategory.get()).getValue();
+			String book_id_list =bookList.replace(" ", "|");
+			//去掉第一个字符|
+			book_id_list=book_id_list.substring(1, book_id_list.length());
+			List<Book> booksInTag = bookService.getBooksByTag(book_id_list, start, count);
+			
+			
+			for(Book b:booksInTag) {
+				BookResultForSearch temp = new BookResultForSearch();
+				temp.setBookResult(b);
+				books.add(temp);
+			}
+			result.setBooks(books);
+			result.setCount(booksInTag.size());
 		}
-		SearchResultJson result=new SearchResultJson();
-		result.setBooks(books);
-		result.setCount(booksInTag.size());
+		
 		
 		return result;
 	}
@@ -914,14 +924,49 @@ public class BookController {
 		for(String b_id : allBorrowedBookId) {
 			Utf8String _bookId = new Utf8String(b_id);
 			Future<List<Type>> checkOverdue = bookContract.checkOverdue(_bookId);
+			//每天检测是否有超期书籍,有则自动归还
 			List<Type> checkresult = checkOverdue.get();
 			Boolean isOutOfDays = ((Bool)checkresult.get(0)).getValue();
 			
 			if(isOutOfDays) {
-				//已经超出借阅时间，智能合约自动还书，需要删除对应数据库的记录
+				//已经超出借阅时间,智能合约自动还书,需要删除对应数据库的记录
 				bookService.deleteBorrowedRecord(b_id);
 			}else {
-				//未超出借阅时间，则根据想看数量更新最长借阅时间
+				//未超出借阅时间,则根据想看数量更新最长借阅时间
+				
+				//根据ID获取书名，统计同名的书的数量
+				Book tBook = bookService.getBookById(b_id);
+				List<Book> listOfSameBook = bookService.listOfSameBook(tBook.getBookName());
+				int countOfSameBook = listOfSameBook.size();
+				
+				//查看最大借阅时间
+				Future<List<Type>> bookStatus = bookContract.checkBookStatus(_bookId);
+				List<Type> bookStatusList = bookStatus.get();
+				BigInteger oldMaxBorrowDuration = ((Uint256)bookStatusList.get(3)).getValue();
+				
+				//计算同名书籍的想看的数量总和
+				int totalWantOfSameBook=0;
+				for(int i=0;i<listOfSameBook.size();i++) {
+					Book b = listOfSameBook.get(i);
+					//区块链操作
+					Utf8String aBookId = new Utf8String(b.getBookId());
+					Future<List<Type>> tbookStatus = bookContract.checkBookStatus(aBookId);
+					List<Type> tbookStatusList = tbookStatus.get();
+					BigInteger aCount = ((Uint256)tbookStatusList.get(2)).getValue();
+					
+					totalWantOfSameBook+=aCount.intValue();
+				}
+				
+				if(totalWantOfSameBook!=0) {
+					//计算减少的天数：同本书想看数量/同本书数量/10
+					int reducedays=(totalWantOfSameBook)/countOfSameBook/10;
+					BigInteger newBorrowDuration = BigInteger.valueOf((long)(reducedays*secondsInADay));
+					//新旧时间不同则更新
+					if(newBorrowDuration!=oldMaxBorrowDuration) {
+						Uint256 nBorrowDuration=new Uint256(newBorrowDuration);
+						bookContract.updateMaxBorrowDuration(_bookId, nBorrowDuration);
+					}
+				}
 			}
 		}
 	}

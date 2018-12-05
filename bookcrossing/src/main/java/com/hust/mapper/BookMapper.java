@@ -28,4 +28,6 @@ public interface BookMapper {
     int getTotal();
     
     List<Book> getBooksByTag(@Param("book_id_list")String book_id_list,@Param("start")int start,@Param("count")int count);
+    
+    List<Book> listOfSameBook(String bookName);
 }
