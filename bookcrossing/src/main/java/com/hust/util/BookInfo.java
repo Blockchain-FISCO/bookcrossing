@@ -28,4 +28,5 @@ public class BookInfo {
 		this.picture = picture;
 	}
 
+
 }

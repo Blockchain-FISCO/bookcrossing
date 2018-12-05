@@ -6,9 +6,16 @@
     <result column="stu_id" property="stuId" jdbcType="VARCHAR" />
     <result column="book_id" property="bookId" jdbcType="VARCHAR" />
   </resultMap>
+  
+  <resultMap id="AdvancedResultMap" type="com.hust.pojo.Want_Book_Hot" >
+    <result column="hot_book_id" property="bookId" jdbcType="VARCHAR" />
+    <result column="hot_book_num" property="hotNum" jdbcType="VARCHAR" />
+  </resultMap>
+  
   <sql id="Base_Column_List" >
     want_id, stu_id, book_id
   </sql>
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
@@ -16,6 +23,10 @@
     where want_id = #{wantId,jdbcType=VARCHAR}
   </select>
   
+  <select id="selecByBookHotOrder" resultMap="AdvancedResultMap">
+	SELECT book_id AS hot_book_id, COUNT(*) AS hot_book_num FROM want_book GROUP BY book_id ORDER BY hot_book_num DESC 
+  </select>
+	
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from want_book
     where want_id = #{wantId,jdbcType=VARCHAR}

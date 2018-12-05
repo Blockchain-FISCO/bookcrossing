@@ -2,6 +2,7 @@ package com.hust.mapper;
 
 import java.util.List;
 
+import com.hust.pojo.Want_Book_Hot;
 import com.hust.pojo.Want_book;
 
 public interface want_bookMapper {
@@ -15,6 +16,8 @@ public interface want_bookMapper {
 
     Want_book selectByPrimaryKey(String wantId);
 
+    List<Want_Book_Hot> selectByHotBookNum();
+    
     int updateByPrimaryKeySelective(Want_book record);
 
     int updateByPrimaryKey(Want_book record);

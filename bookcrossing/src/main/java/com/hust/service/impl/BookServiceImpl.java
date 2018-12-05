@@ -10,6 +10,7 @@ import com.hust.mapper.BorrowRecordMapper;
 import com.hust.mapper.want_bookMapper;
 import com.hust.pojo.Book;
 import com.hust.pojo.BorrowRecord;
+import com.hust.pojo.Want_Book_Hot;
 import com.hust.pojo.Want_book;
 import com.hust.service.BookService;
 
@@ -36,6 +37,18 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
+	public Book hotBook(String bookId) {
+		// TODO Auto-generated method stub
+		return bookMapper.selectByPrimaryKey(bookId);
+	}
+
+	@Override
+	public Book needBook(String bookId) {
+		// TODO Auto-generated method stub
+		return bookMapper.selectByPrimaryKey(bookId);
+	}
+
+	@Override
 	public int getTotal() {
 		// TODO Auto-generated method stub
 		return bookMapper.getTotal();
@@ -53,6 +66,12 @@ public class BookServiceImpl implements BookService {
 		return bookMapper.homeList();
 	}
 
+	@Override
+	public List<Want_Book_Hot> selectByHotBookNum() {
+		// TODO Auto-generated method stub
+		return wantBookMapper.selectByHotBookNum();
+	}
+	
 	@Override
 	public void deleteBookById(String bookId) {
 		// TODO Auto-generated method stub
@@ -118,6 +137,6 @@ public class BookServiceImpl implements BookService {
 		// TODO Auto-generated method stub
 		wantBookMapper.deleteBySIdAndBId(book_id, stu_id);
 	}
-	
+
 	
 }

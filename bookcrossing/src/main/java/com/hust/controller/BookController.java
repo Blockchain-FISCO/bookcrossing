@@ -5,7 +5,10 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -46,6 +49,7 @@ import com.hust.mail.MailSenderInfoBean;
 import com.hust.pojo.Book;
 import com.hust.pojo.BorrowRecord;
 import com.hust.pojo.Student;
+import com.hust.pojo.Want_Book_Hot;
 import com.hust.pojo.Want_book;
 import com.hust.service.BookService;
 import com.hust.service.StudentService;
@@ -325,7 +329,164 @@ public class BookController {
 		return homelistJson;
 	}
 	
+	/**
+	 * 热门书籍（返回给安卓端）
+	 * @return
+	 */
+	@RequestMapping(value="hotlist")
+	@ResponseBody
+	public HomelistJson hotlist(HttpServletRequest request) {
+		//获取热门书籍的ID以及相应的want次数
+		List<Want_Book_Hot> want_book_hot = bookService.selectByHotBookNum();		
+		
+		//设置返回Json数据原型
+		HomelistJson homelistJson=new HomelistJson();
+		
+		// 获取分页参数
+        int start = 0;
+        int count = 5;
+        try {
+            start = Integer.parseInt(request.getParameter("start"));
+            count = Integer.parseInt(request.getParameter("count"));
+        } catch (Exception e) {
+        }
+		
+        //获取对应ID的热门书籍的具体书籍信息
+        int want_book_hot_size= want_book_hot.size();
+        List<Book> book_hot_list = null;
+        for(int i = 0; i<want_book_hot_size; i++) {
+        	String book_hot_id = want_book_hot.get(i).getBookId();
+        	Book book_hot = bookService.hotBook(book_hot_id);
+        	book_hot_list.add(book_hot);        	
+        }
+        	      
+        //进行返回书籍格式的封装
+		int total = book_hot_list.size();		
+		homelistJson.setCount(total);
+		
+		List<BookInfo> temp = new ArrayList<BookInfo>();
+				
+		//进行数据的分页(这里采取的是物理分页)
+		for(int i = start; i<count;i++) {
+			Book b =  book_hot_list.get(i);
+			BookInfo bookInfo=new BookInfo();
+			bookInfo.setBook_id(b.getBookId());
+			bookInfo.setBook_name(b.getBookName());
+			bookInfo.setPicture(b.getPicture());;
+			temp.add(bookInfo);
+		}
+
+		homelistJson.setBooks(temp);
+		
+		return homelistJson;
+	}
 	
+	/**
+	 * 需要捐献的书籍（返回给安卓端）
+	 * 需要捐献的书籍 = 被 want 次数较多的书籍的名称（相同书名、不同书籍ID的书籍会被去重）
+	 * @return
+	 */
+	@RequestMapping(value="needlist")
+	@ResponseBody
+	public HomelistJson needlist(HttpServletRequest request) {
+		//获取热门书籍的ID以及相应的want次数
+		List<Want_Book_Hot> want_book_hot = bookService.selectByHotBookNum();		
+		
+		//设置返回Json数据原型
+		HomelistJson homelistJson=new HomelistJson();
+		
+		// 获取分页参数
+        int start = 0;
+        int count = 5;
+        try {
+            start = Integer.parseInt(request.getParameter("start"));
+            count = Integer.parseInt(request.getParameter("count"));
+        } catch (Exception e) {
+        }
+		
+       
+        //获取对应ID的热门书籍的具体书籍信息，同时进行去重
+        int want_book_hot_size= want_book_hot.size();
+        List<Book> book_hot_list = null;
+        for(int i = 0; i<want_book_hot_size; i++) {
+        	String book_hot_id = want_book_hot.get(i).getBookId();
+        	
+        	Book book_hot = bookService.hotBook(book_hot_id);
+        	book_hot_list.add(book_hot);        	
+        }
+        	
+        //字段去重逻辑,进行字符的相同判断然后去重
+        Set set = new TreeSet<Book>(new Comparator<Book>(){
+        	@Override
+        	public int compare(Book book1, Book book2) {
+        		//
+        		return book1.getBookName().compareTo(book2.getBookName());
+        	}
+        });
+        
+        //返回去重的书籍列表
+        set.addAll(book_hot_list);
+        
+        List<Book> book_hot_nodup__list = new ArrayList<Book>(set);
+       
+        //进行返回书籍格式的封装
+		int total = book_hot_nodup__list.size();		
+		homelistJson.setCount(total);
+		
+		List<BookInfo> temp = new ArrayList<BookInfo>();
+				
+		//进行数据的分页(这里采取的是物理分页)
+		for(int i = start; i<count;i++) {
+			Book b =  book_hot_nodup__list.get(i);
+			BookInfo bookInfo=new BookInfo();
+			bookInfo.setBook_id(b.getBookId());
+			bookInfo.setBook_name(b.getBookName());
+			bookInfo.setPicture(b.getPicture());;
+			temp.add(bookInfo);
+		}
+
+		homelistJson.setBooks(temp);
+		
+		return homelistJson;
+	}
+	
+//	/**
+//	 * 今日上新书籍（返回给安卓端）
+//	 * @return
+//	 */
+//	@RequestMapping(value="todaylist")
+//	@ResponseBody
+//	public HomelistJson todaylist(HttpServletRequest request) {
+//		HomelistJson homelistJson=new HomelistJson();
+//		// 获取分页参数
+//        int start = 0;
+//        int count = 5;
+//
+//        try {
+//            start = Integer.parseInt(request.getParameter("start"));
+//            count = Integer.parseInt(request.getParameter("count"));
+//        } catch (Exception e) {
+//        }
+//		
+//		//List<Book> books = bookService.homeList();
+//        List<Book> books = bookService.list(start, count);
+//		
+//		int total = books.size();
+//		homelistJson.setCount(total);
+//		
+//		List<BookInfo> temp=new ArrayList<BookInfo>();
+//				
+//		for(Book b: books) {
+//			BookInfo bookInfo=new BookInfo();
+//			bookInfo.setBook_id(b.getBookId());
+//			bookInfo.setBook_name(b.getBookName());
+//			bookInfo.setPicture(b.getPicture());;
+//			temp.add(bookInfo);
+//		}
+//		homelistJson.setBooks(temp);
+//		
+//		return homelistJson;
+//	}
 	
 	/**
 	 * 查看书籍详情(安卓端)
@@ -681,4 +842,6 @@ public class BookController {
 		
 		return result;
 	}
+	
+	
 }
