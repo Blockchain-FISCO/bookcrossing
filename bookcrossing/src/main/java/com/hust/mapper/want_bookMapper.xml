@@ -23,7 +23,7 @@
     where want_id = #{wantId,jdbcType=VARCHAR}
   </select>
   
-  <select id="selecByBookHotOrder" resultMap="AdvancedResultMap">
+  <select id="selectByHotBookNum" resultMap="AdvancedResultMap">
 	SELECT book_id AS hot_book_id, COUNT(*) AS hot_book_num FROM want_book GROUP BY book_id ORDER BY hot_book_num DESC 
   </select>
 	

@@ -77,8 +77,8 @@ public class MailSender {
 		mailInfo.setMailServerHost("smtp.163.com");      
 		mailInfo.setMailServerPort("25");     
 		mailInfo.setValidate(true);        
-		mailInfo.setUserName("cxf19910321@163.com");    
-		mailInfo.setPassword("？");//您的邮箱密码        mailInfo.setFromAddress("cxf19910321@163.com");  
+		mailInfo.setUserName("alburtams@163.com");    
+		mailInfo.setPassword("wdmm1314521123");//您的邮箱密码        mailInfo.setFromAddress("cxf19910321@163.com");  
 		      
 		List<String> address = new ArrayList<String>();      
 		address.add("571310983@qq.com");     

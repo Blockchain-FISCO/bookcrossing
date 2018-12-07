@@ -725,12 +725,13 @@ public class BookController {
 		}
 		MailSenderInfoBean mailInfo = new MailSenderInfoBean();
 		
-		mailInfo.setMailServerHost("smtp.qq.com");      
+		mailInfo.setMailServerHost("smtp.163.com");      
 		mailInfo.setMailServerPort("25");     
 		mailInfo.setValidate(true);        
-		mailInfo.setUserName("1055296551@qq.com");    
-		mailInfo.setPassword("?");//您的邮箱密码        
-	    mailInfo.setFromAddress("1055296551@qq.com");
+		mailInfo.setUserName("alburtams@163.com");    
+		//POP3 授权码：aettgwhrlbdlbebj
+		mailInfo.setPassword("wdmm1314521123");//您的邮箱密码        
+	    mailInfo.setFromAddress("alburtams@163.com");
 		mailInfo.setToAddress(mail_address_list);     
 		mailInfo.setSubject("图书漂流");        
 		mailInfo.setContent("您想阅读的书籍目前已经归还，请您及时借阅");     
