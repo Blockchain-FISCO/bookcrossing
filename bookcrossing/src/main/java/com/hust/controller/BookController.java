@@ -72,7 +72,7 @@ import com.hust.util.SearchResultJson;
 public class BookController {
 	
 	//图片访问根路径，部署项目时需要修改
-	static String imageUrl="D:/apache-tomcat-7.0.91/webapps/staticimage";//http://132.232.199.162:8080
+	static String imageUrl="http://132.232.199.162:8080/staticimage/";//http://132.232.199.162:8080
 	static String school="计算机学院";
 	static double secondsInADay=60*60*24; //秒*分*小时
 	
@@ -184,7 +184,7 @@ public class BookController {
         }
         //System.out.println(fileName);
         
-        
+//        System.out.println(request.getParameter("bookid")+"  "+request.getParameter("author")+"  "+request.getParameter("bookname")+"  "+request.getParameter("press")+"  "+request.getParameter("description"));
         //新增图书
         Book book=new Book();
         book.setBookId(request.getParameter("bookid"));
@@ -217,7 +217,8 @@ public class BookController {
         //在区块链上添加书籍
         bookContract.registerStudent(_stuId, _bookId, _emailAddr, _bookName, _schoolName,_bookCategory);
         
-		return "redirect:/booklist";
+        //跳转到二维码生成页面
+		return "redirect:https://cli.im/api/qrcode/code?text="+request.getParameter("bookid");
 	}
 	
 	
@@ -500,6 +501,7 @@ public class BookController {
 	@RequestMapping(value="book")
 	@ResponseBody
 	public BookDetail bookDetail(HttpServletRequest request) throws InterruptedException, ExecutionException {
+		System.out.println(request.getRequestURL()+"--"+request.getParameter("book_id"));
 		String bookId=request.getParameter("book_id");
 		Book book = bookService.getBookById(bookId);
 		String available="0";
@@ -969,6 +971,17 @@ public class BookController {
 				}
 			}
 		}
+	}
+	
+	
+	/**
+	 * 新增图书页面跳转
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value="newbook")
+	public String newBook(HttpServletRequest request) {
+		return "newbook";
 	}
 
 }

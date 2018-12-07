@@ -27,46 +27,40 @@
 			</div>
 			<div class="panel-body">
 
-				<form method="post" action="updateBook" role="form" enctype="multipart/form-data">
-					<table class="editTable">
-						<tr>
-							<td>书号：</td>
-							<td><input type="text" name="bookid" id="bookid"
-								value="${book.bookId}" readonly="true"></td>
-						</tr>
-						<tr>
-							<td>书名：</td>
-							<td><input type="text" name="bookName" id="bookName"
-								value="${book.bookName}" placeholder="请在这里输入名字"></td>
-						</tr>
-						<tr>
-							<td>作者：</td>
-							<td><input type="text" name="author" id="author"
-								value="${book.author}" placeholder="请在这里输入作者"></td>
-						</tr>
-						<tr>
-							<td>出版社：</td>
-							<td><input type="text" name="press" id="press"
-								value="${book.press}" placeholder="请在这里输入出版社"></td>
-						</tr>
-						<tr>
-							<td>上传图片:</td>
-							<td><img alt="暂无图片" src="${book.picture}"></td>
-							<td><input type="file" name="picture"></td>
-						</tr>
-						<tr>
-							<td>书籍描述：</td>
-							<td><textarea style="width: 300px; height: 100px;"
-									name="description" id="description">${book.bookDescription}</textarea></td>
-						</tr>
-						<tr class="submitTR">
-							<td colspan="2" align="center"><input type="hidden"
-								name="id" value="${book.bookId}">
-								<button type="submit" class="btn btn-success">提 交</button></td>
-
-						</tr>
-
-					</table>
+				<form role="form" method="post" action="updateBook" enctype="multipart/form-data">
+					<div class="form-group">
+						<label class="control-label">书号:</label> <input
+							class="form-control" type="text" name="bookid" id="bookid"
+								readonly="true" value="${book.bookId}" />
+					</div>
+					<div class="form-group">
+						<label class="control-label">书名:</label> <input
+							class="form-control" type="text" name="bookName" id="bookName" value="${book.bookName}"
+								placeholder="请在这里输入书名" />
+					</div>
+					<div class="form-group">
+						<label class="control-label">作者:</label> <input
+							class="form-control" type="text" name="author" id="author" value="${book.author}"
+								placeholder="请在这里输入作者" />
+					</div>
+					<div class="form-group">
+						<label class="control-label">出版社:</label> <input
+							class="form-control" type="text" name="press" id="press" value="${book.press}"
+								placeholder="请在这里输入出版社" />
+					</div>
+					<div class="form-group">
+						<label for="inputfile">上传图片:</label>
+						<img alt="暂无图片" src="${book.picture}"> 
+						<input type="file" name="picture">
+					</div>
+					<div class="form-group">
+						<label for="name">书籍描述：</label>
+						<textarea class="form-control" rows="3"
+									name="description" id="description" placeholder="请在这里输入描述">${book.bookDescription}</textarea>
+					</div>
+					<div class="form-group">
+						<center><button type="submit" class="btn btn-default">提交</button></center>
+					</div>
 				</form>
 			</div>
 		</div>

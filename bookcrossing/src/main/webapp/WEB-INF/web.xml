@@ -42,9 +42,10 @@
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<init-param>
 			<param-name>contextConfigLocation</param-name>
-			<param-value>classpath:spring-mvc.xml</param-value>
+			<param-value></param-value>
 		</init-param>
-		<!-- 该配置会使得controller加载两次 <load-on-startup>1</load-on-startup> -->
+		<!-- 该配置会使得controller加载两次    classpath:spring-mvc.xml -->
+		<load-on-startup>1</load-on-startup>
 		<async-supported>true</async-supported>
 	</servlet>
 	<servlet-mapping>
