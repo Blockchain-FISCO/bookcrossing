@@ -3,6 +3,11 @@ package com.hust.mail;
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
 
+/**
+ * 基本信息验证类
+ * @author Weifeng Hao
+ *
+ */
 public class MailServerAuthenticator extends Authenticator {
 	String userName = null;
 	String password = null;

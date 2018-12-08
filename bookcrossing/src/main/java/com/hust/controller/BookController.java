@@ -706,7 +706,7 @@ public class BookController {
 	 */
 	public void sendMail(String bookId) {
 		List<Want_book> want_stu_list = bookService.getWant_bookByBId(bookId);
-		List<String> mail_address_list = null;
+		List<String> mail_address_list = new ArrayList<String>();
 		
 		for(int i = 0; i< want_stu_list.size(); i++) {
 			Want_book want_stu = want_stu_list.get(i);
@@ -729,17 +729,11 @@ public class BookController {
 		mailInfo.setMailServerPort("25");     
 		mailInfo.setValidate(true);        
 		mailInfo.setUserName("alburtams@163.com");    
-		//POP3 授权码：aettgwhrlbdlbebj
-		mailInfo.setPassword("wdmm1314521123");//您的邮箱密码        
+		mailInfo.setPassword("hwfwdmm1314521");//您的邮箱授权码        
 	    mailInfo.setFromAddress("alburtams@163.com");
 		mailInfo.setToAddress(mail_address_list);     
 		mailInfo.setSubject("图书漂流");        
 		mailInfo.setContent("您想阅读的书籍目前已经归还，请您及时借阅");     
-		
-//		List<String> attachFileNames = new ArrayList<String>();       
-//		 //此处是你要得到的上传附件的文件路径        
-//		attachFileNames.add("pom.xml");   
-//		mailInfo.setAttachFileNames(attachFileNames);  
 		
 		MailSender sender = new MailSender();
 		sender.sendTextMail(mailInfo);	

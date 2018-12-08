@@ -3,6 +3,11 @@ package com.hust.mail;
 import java.util.List;
 import java.util.Properties;
 
+/**
+ * 基本的信息封装类
+ * @author Weifeng Hao
+ *
+ */
 public class MailSenderInfoBean {
 // 发送邮件的服务器的IP和端口    
 	private String mailServerHost;
