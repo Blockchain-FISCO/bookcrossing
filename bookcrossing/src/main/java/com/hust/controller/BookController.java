@@ -356,7 +356,7 @@ public class BookController {
 		
         //获取对应ID的热门书籍的具体书籍信息
         int want_book_hot_size= want_book_hot.size();
-        List<Book> book_hot_list = null;
+        List<Book> book_hot_list = new ArrayList<>();
         for(int i = 0; i<want_book_hot_size; i++) {
         	String book_hot_id = want_book_hot.get(i).getBookId();
         	Book book_hot = bookService.hotBook(book_hot_id);
@@ -410,7 +410,7 @@ public class BookController {
        
         //获取对应ID的热门书籍的具体书籍信息，同时进行去重
         int want_book_hot_size= want_book_hot.size();
-        List<Book> book_hot_list = null;
+        List<Book> book_hot_list = new ArrayList<>();
         for(int i = 0; i<want_book_hot_size; i++) {
         	String book_hot_id = want_book_hot.get(i).getBookId();
         	
