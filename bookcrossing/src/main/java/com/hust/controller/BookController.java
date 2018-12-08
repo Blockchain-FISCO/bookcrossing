@@ -365,20 +365,25 @@ public class BookController {
         	      
         //进行返回书籍格式的封装
 		int total = book_hot_list.size();		
-		homelistJson.setCount(total);
+		
 		
 		List<BookInfo> temp = new ArrayList<BookInfo>();
 				
 		//进行数据的分页(这里采取的是物理分页)
-		for(int i = start; i<count;i++) {
-			Book b =  book_hot_list.get(i);
-			BookInfo bookInfo=new BookInfo();
-			bookInfo.setBook_id(b.getBookId());
-			bookInfo.setBook_name(b.getBookName());
-			bookInfo.setPicture(b.getPicture());;
-			temp.add(bookInfo);
+		for(int i = start; i<start+count;i++) {
+			if(i<=total-1) {
+				Book b =  book_hot_list.get(i);
+				BookInfo bookInfo=new BookInfo();
+				bookInfo.setBook_id(b.getBookId());
+				bookInfo.setBook_name(b.getBookName());
+				bookInfo.setPicture(b.getPicture());;
+				temp.add(bookInfo);
+			}else {
+				break;
+			}
 		}
-
+		
+		homelistJson.setCount(temp.size());
 		homelistJson.setBooks(temp);
 		
 		return homelistJson;
@@ -434,20 +439,25 @@ public class BookController {
        
         //进行返回书籍格式的封装
 		int total = book_hot_nodup__list.size();		
-		homelistJson.setCount(total);
 		
 		List<BookInfo> temp = new ArrayList<BookInfo>();
 				
 		//进行数据的分页(这里采取的是物理分页)
-		for(int i = start; i<count;i++) {
-			Book b =  book_hot_nodup__list.get(i);
-			BookInfo bookInfo=new BookInfo();
-			bookInfo.setBook_id(b.getBookId());
-			bookInfo.setBook_name(b.getBookName());
-			bookInfo.setPicture(b.getPicture());;
-			temp.add(bookInfo);
+		for(int i = start; i<start+count;i++) {
+			if(i<=total-1) {
+				Book b =  book_hot_nodup__list.get(i);
+				BookInfo bookInfo=new BookInfo();
+				bookInfo.setBook_id(b.getBookId());
+				bookInfo.setBook_name(b.getBookName());
+				bookInfo.setPicture(b.getPicture());;
+				temp.add(bookInfo);
+			}else {
+				break;
+			}
+			
 		}
-
+		
+		homelistJson.setCount(temp.size());
 		homelistJson.setBooks(temp);
 		
 		return homelistJson;
