@@ -720,35 +720,43 @@ public class BookController {
 		List<Want_book> want_stu_list = bookService.getWant_bookByBId(bookId);
 		List<String> mail_address_list = new ArrayList<String>();
 		
-		for(int i = 0; i< want_stu_list.size(); i++) {
-			Want_book want_stu = want_stu_list.get(i);
-			Utf8String _stuId = new Utf8String(want_stu.getStuId());
-			
-			Future<List<Type>> student_info_list = bookContract.getStudent(_stuId);			
-			try {
-				List<Type> student_info_result = student_info_list.get();
-				String mail_address = ((Utf8String)student_info_result.get(1)).getValue();
-				mail_address_list.add(mail_address);
-			} catch (InterruptedException | ExecutionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		if(!want_stu_list.isEmpty()) {
+			for(int i = 0; i< want_stu_list.size(); i++) {
+				Want_book want_stu = want_stu_list.get(i);
+				Utf8String _stuId = new Utf8String(want_stu.getStuId());
+				
+				Future<List<Type>> student_info_list = bookContract.getStudent(_stuId);			
+				try {
+					List<Type> student_info_result = student_info_list.get();
+					if(student_info_result.isEmpty()) {
+						continue;
+					}else {
+						String mail_address = ((Utf8String)student_info_result.get(1)).getValue();
+						mail_address_list.add(mail_address);
+					}
+					
+				} catch (InterruptedException | ExecutionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 			}
+			MailSenderInfoBean mailInfo = new MailSenderInfoBean();
 			
+			mailInfo.setMailServerHost("smtp.163.com");      
+			mailInfo.setMailServerPort("25");     
+			mailInfo.setValidate(true);        
+			mailInfo.setUserName("alburtams@163.com");    
+			mailInfo.setPassword("hwfwdmm1314521");//您的邮箱授权码        
+		    mailInfo.setFromAddress("alburtams@163.com");
+			mailInfo.setToAddress(mail_address_list);     
+			mailInfo.setSubject("图书漂流");        
+			mailInfo.setContent("您想阅读的书籍目前已经归还，请您及时借阅");     
+			
+			MailSender sender = new MailSender();
+			sender.sendTextMail(mailInfo);
 		}
-		MailSenderInfoBean mailInfo = new MailSenderInfoBean();
-		
-		mailInfo.setMailServerHost("smtp.163.com");      
-		mailInfo.setMailServerPort("25");     
-		mailInfo.setValidate(true);        
-		mailInfo.setUserName("alburtams@163.com");    
-		mailInfo.setPassword("hwfwdmm1314521");//您的邮箱授权码        
-	    mailInfo.setFromAddress("alburtams@163.com");
-		mailInfo.setToAddress(mail_address_list);     
-		mailInfo.setSubject("图书漂流");        
-		mailInfo.setContent("您想阅读的书籍目前已经归还，请您及时借阅");     
-		
-		MailSender sender = new MailSender();
-		sender.sendTextMail(mailInfo);	
+			
 	}
 	
 	/**
